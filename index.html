@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPS Build Analyzer v2.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1b21;
+            --panel-bg: #24252c;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-color: #374151;
+            --input-bg: #1f2128;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --btn-bg: #2d303a;
+            --btn-border: #40444f;
+            --highlight: #4ade80;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid-1 {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .talent-grid {
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            white-space: nowrap;
+        }
+
+        .form-group input, .form-group select {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .talent-grid .form-group select {
+            text-align: center;
+            text-align-last: center;
+            padding: 8px 4px;
+        }
+
+        .talent-grid .form-group select option {
+            text-align: center;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+        }
+
+        #tp-display {
+            text-align: center;
+            color: #93c5fd;
+            font-weight: 500;
+            cursor: default;
+            background-color: rgba(31, 33, 40, 0.6);
+        }
+
+        .number-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .number-input-container input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .number-input-container.has-arrows input {
+            padding-right: 30px;
+        }
+
+        .arrow-buttons {
+            position: absolute;
+            right: 1px;
+            top: 1px;
+            bottom: 1px;
+            width: 24px;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+            border-radius: 0 6px 6px 0;
+            overflow: hidden;
+        }
+
+        .arrow-buttons button {
+            flex: 1;
+            background: var(--input-bg);
+            border: none;
+            color: var(--text-muted);
+            font-size: 10px;
+            padding: 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .arrow-buttons button:hover {
+            background-color: var(--btn-border);
+            color: var(--text-main);
+        }
+
+        .arrow-buttons .btn-up {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .number-input-container.disabled .arrow-buttons {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        button.btn-action {
+            cursor: pointer;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: var(--btn-bg);
+            color: var(--text-main);
+            border: 1px solid var(--btn-border);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--btn-border);
+        }
+
+        .output-container {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 100px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .dps-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            text-align: center;
+            white-space: nowrap;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .dps-table th, .dps-table td {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .dps-table th {
+            background-color: var(--input-bg);
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .dps-table td {
+            background-color: var(--panel-bg);
+        }
+
+        .dps-table th:first-child,
+        .dps-table td:first-child {
+            color: var(--text-muted);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .dps-table .col-total {
+            color: var(--highlight);
+            font-weight: bold;
+        }
+
+        .extra-info {
+            margin-bottom: 16px;
+            font-size: 13px;
+            line-height: 1.6;
+            font-family: "Consolas", "Courier New", monospace;
+        }
+
+        .tp-highlight {
+            color: #93c5fd;
+            font-weight: 500;
+        }
+
+        .wheel-text {
+            color: var(--text-muted);
+        }
+
+        .footer {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-top: 20px;
+        }
+
+        .footer details {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .footer summary {
+            padding: 12px 16px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-main);
+            background-color: var(--input-bg);
+            user-select: none;
+            outline: none;
+        }
+
+        .footer summary:hover {
+            background-color: var(--btn-border);
+        }
+
+        .details-content {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .details-content p {
+            margin: 0 0 10px 0;
+        }
+
+        .details-content ul {
+            margin: 0 0 10px 0;
+            padding-left: 20px;
+        }
+
+        .details-content li {
+            margin-bottom: 4px;
+        }
+
+        .details-content code {
+            background-color: var(--input-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #93c5fd;
+        }
+
+        .author-info {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* --- 更新日志按钮和模态框样式 --- */
+        .changelog-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--panel-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Ubuntu', sans-serif;
+            z-index: 100;
+            transition: background 0.2s;
+        }
+        .changelog-btn:hover {
+            background-color: var(--btn-border);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            color: var(--text-main);
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .close-btn:hover {
+            color: var(--text-main);
+        }
+        .modal-content h2 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+        .modal-content h3 {
+            font-size: 16px;
+            margin-top: 20px;
+            color: #93c5fd;
+        }
+        .modal-content ul {
+            padding-left: 20px;
+            margin-top: 8px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        @media (max-width: 1100px) {
+            .form-grid-1, .form-grid-2 {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            .talent-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .talent-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .changelog-btn {
+                top: 10px;
+                right: 10px;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- 右上角更新日志按钮 -->
+<button class="changelog-btn" onclick="toggleModal()">📄 更新日志</button>
+
+<!-- 更新日志模态框 -->
+<div id="changelogModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleModal()">&times;</span>
+        <h2>更新日志</h2>
+        <h3>v2.0.0 (2026.11.12)</h3>
+        <ul>
+            <li>网页版本发布</li>
+            <li>新增了实时 TP 计算和等级显示</li>
+            <li>新增了攻击范围角（Angle）计算</li>
+            <li>重构了界面，支持响应式布局</li>
+            <li>修复已知问题</li>
+        </ul>
+        <h3>v1.0.0 (2026.10.24)</h3>
+        <ul>
+            <li>初始Python终端版本发布</li>
+        </ul>
+    </div>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h1>DPS Build Analyzer</h1>
+        <p>花瓣 / 天赋 / 生物体伤 / 生物护甲 → 各花瓣 DPS 与总 DPS</p>
+    </div>
+
+    <div class="panel">
+        <div class="form-grid-1">
+            <div class="form-group" style="grid-column: span 4;">
+                <label>花瓣（空格分隔，可加数量前缀）</label>
+                <input type="text" id="build" value="">
+            </div>
+
+            <div class="form-group">
+                <label>生物体伤</label>
+                <div class="number-input-container has-arrows">
+                    <input type="text" id="x" value="21870" inputmode="decimal" autocomplete="off">
+                    <div class="arrow-buttons">
+                        <button type="button" class="btn-up" onclick="stepX(1)" tabindex="-1">▲</button>
+                        <button type="button" class="btn-down" onclick="stepX(-1)" tabindex="-1">▼</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>生物护甲</label>
+                <div class="number-input-container has-arrows">
+                    <input type="text" id="y" value="583.2" inputmode="decimal" autocomplete="off">
+                    <div class="arrow-buttons">
+                        <button type="button" class="btn-up" onclick="stepY(1)" tabindex="-1">▲</button>
+                        <button type="button" class="btn-down" onclick="stepY(-1)" tabindex="-1">▼</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label>模式</label>
+                <select id="mode" onchange="handleModeChange()">
+                    <option value="lentil">lentil</option>
+                    <option value="yy">yy</option>
+                    <option value="wheel">wheel</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>lentil 距离</label>
+                <div class="number-input-container" id="lentildis-container">
+                    <input type="number" id="lentildis" value="0" min="0" max="2147483647" step="8">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>转速指令值</label>
+                <div class="number-input-container" id="rotspeed-container">
+                    <!-- 使用系统自带箭头 -->
+                    <input type="number" id="rotspeed" value="1" min="0" max="1" step="0.05">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>攻击范围角</label>
+                <div class="number-input-container has-arrows" id="angle-container">
+                    <input type="text" id="angle" value="360°" inputmode="decimal" autocomplete="off" disabled>
+                    <div class="arrow-buttons">
+                        <button type="button" class="btn-up" onclick="stepAngle(1)" tabindex="-1">▲</button>
+                        <button type="button" class="btn-down" onclick="stepAngle(-1)" tabindex="-1">▼</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="talent-grid">
+            <div class="form-group"><label>ph</label><select id="t-ph" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="U">U</option>
+                <option value="S">S</option>
+                <option value="Et" selected>Et</option>
+            </select></div>
+            <div class="form-group"><label>reload</label><select id="t-reload" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="U">U</option>
+                <option value="S">S</option>
+                <option value="Et" selected>Et</option>
+            </select></div>
+            <div class="form-group"><label>summon</label><select id="t-summon" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="U">U</option>
+                <option value="S">S</option>
+                <option value="Et">Et</option>
+            </select></div>
+            <div class="form-group"><label>luck</label><select id="t-luck" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="U">U</option>
+                <option value="S">S</option>
+                <option value="Et">Et</option>
+            </select></div>
+            <div class="form-group"><label>poison</label><select id="t-poison" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+            </select></div>
+            <div class="form-group"><label>cpoison</label><select id="t-cpoison" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="1">1</option>
+            </select></div>
+            <div class="form-group"><label>dup</label><select id="t-dup" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="L">L</option>
+                <option value="U">U</option>
+                <option value="S">S</option>
+                <option value="Et">Et</option>
+            </select></div>
+            <div class="form-group"><label>rot</label><select id="t-rot" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
+            </select></div>
+            <div class="form-group"><label>reach</label><select id="t-reach" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="R">R</option>
+                <option value="M">M</option>
+                <option value="S">S</option>
+            </select></div>
+            <div class="form-group"><label>health</label><select id="t-health" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+            </select></div>
+
+            <div class="form-group">
+                <label>TP cost/lvl req</label>
+                <input type="text" id="tp-display" value="" readonly placeholder="加载中...">
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button id="calc-btn" class="btn-primary btn-action" disabled>加载计算引擎中...</button>
+            <button class="btn-secondary btn-action" onclick="loadExample('dup sawblade')">示例：dup sawblade</button>
+            <button class="btn-secondary btn-action" onclick="loadExample('chip yy')">示例：chip yy</button>
+            <button class="btn-secondary btn-action" onclick="loadExample('dust lentil 1')">示例：dust lentil 1</button>
+            <button class="btn-secondary btn-action" onclick="loadExample('dust lentil 2')">示例：dust lentil 2</button>
+            <button class="btn-secondary btn-action" onclick="loadExample('triangle wheel')">示例：triangle wheel
+            </button>
+            <button class="btn-secondary btn-action" onclick="loadExample('2.5s wheel')">示例：2.5s wheel</button>
+        </div>
+    </div>
+
+    <div id="output-container" class="output-container">等待加载 Python 环境...</div>
+
+    <div class="footer">
+        <details open>
+            <summary>使用说明</summary>
+            <div class="details-content">
+                <p><strong>用法：</strong></p>
+                <p>1. 在上方输入花瓣构筑、通过下拉框配置天赋、填写生物体伤与生物护甲、选择模式，点击“计算 DPS”即可在下方表格输出各花瓣
+                    DPS 以及总 DPS。</p>
+                <p>2. 右侧的“TP cost/lvl req”显示框会实时计算并展示当前所选天赋的 TP 消耗及对应等级。</p>
+                <p>3. 花瓣、天赋、生物体伤、生物护甲为必填项；模式可通过下拉框选择 "lentil"、"yy" 或 "wheel"，默认为
+                    "lentil"。</p>
+                <ul>
+                    <li>模式为 "lentil" 或 "yy" 时，需在“lentil 距离”输入框填写数值（比如填 112 表示 2ulentil
+                        距离；若想得到完全紧贴的理论 dps 可填默认值 0）。
+                    </li>
+                    <li>模式为 "wheel" 时，需在“转速指令值”输入框填写转速指令（比如 0.95；默认值为
+                        1），以及在“攻击范围角”输入框填写攻击范围角（默认值为 138°）。
+                    </li>
+                </ul>
+
+                <p><strong>花瓣：</strong></p>
+                <p>1. 各花瓣名用空格隔开，s 不标等级，其它要标等级（例：usawblade、pearl、qcoin）。</p>
+                <p>2. 花瓣前可加数字表示多个同一花瓣（例：2bone、3claw）。</p>
+                <p>3. 目前支持的花瓣：所有 u/s/q 等级的一帧十判花瓣（部分魔法花瓣除外）、部分非一帧十判花瓣。</p>
+                <p>4. 花瓣名的特殊情况：</p>
+                <ul>
+                    <li>(1) 缩写：ant egg -> agg；beetle egg -> bgg；golden leaf -> gl。</li>
+                    <li>(2) 不含 (1) 的情况中，图标显示花瓣名与真实花瓣名不同时，采用图标显示花瓣名，如 cogwheel 应写为
+                        cog。
+                    </li>
+                    <li>(3) (2) 的情况中，若多个花瓣图标显示花瓣名重复，则将真实花瓣名中的形容词加上 () 括号提到图标花瓣名之后，如
+                        magic leaf 应写为 leaf(magic)。
+                    </li>
+                    <li>(4) 如果同一花瓣不同情况下有不同 dps，则在花瓣名后加上 _+数字 加以区分，不加则为默认，具体如下：
+                        <ul>
+                            <li>bean_0：周围有人；1：周围没人；默认为 0</li>
+                            <li>broccoli_0：中0发；1~3：以此类推；默认为 0</li>
+                            <li>carrot_0：不发射（伤害-80%）；1：发射（额外时间0.5s）；默认为 1</li>
+                            <li>claw_0：无额外伤害；1：有额外伤害；默认为 1</li>
+                            <li>clay_0：最低伤害；1：最高伤害（无额外时间）；默认为 1</li>
+                            <li>grapes_0：不发射（1发，无额外时间）；1：中1发（额外时间0.5s）；2~6：以此类推；默认为 0</li>
+                            <li>laser_0：本体伤害；1：电伤害；默认为 1</li>
+                            <li>missile：同 carrot</li>
+                            <li>missile(mecha)：同 carrot</li>
+                            <li>pearl_0：不发射（无额外时间）；1：发射（额外时间0.5s）；默认为 0</li>
+                            <li>peas：同 grapes</li>
+                            <li>pollen_0：不发射（无额外时间）；1：发射（额外时间0.5s）；默认为 1</li>
+                            <li>privet_xx：xx 表示 privet 对应毒 dps 花瓣缩写，ugrapes 为 ug，siris 为 i，qpincer 为
+                                qp，以此类推
+                            </li>
+                            <li>tomato_0：最低伤害；1：最高伤害（额外时间1s）</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p>5. 如果花瓣不计入 dps（bur、dl、gl 等）但仍发挥其效果，在后面加上单个下划线 _ （例：ugl_）。</p>
+
+                <p><strong>天赋：</strong></p>
+                <p>1. 天赋顺序分别为：ph(petal health)、reload、summon、luck、poison、cpoison(concentrated
+                    poison)、dup(duplicator)、rot(rotation speed)、reach、health/sc(second chance)。</p>
+                <p>2. ph 至 luck、dup 至 reach 天赋：用等级表示，不点为 -，Common 为 C，以此类推，其中
+                    Unusual-Un，Ultra-U，Epic-E，Eternal-Et。</p>
+                <p>3. poison 天赋：用层数表示，不点为 -，点一层为 1，点满为 9。</p>
+                <p>4. cpoison 天赋：不点为 -，点为 1。</p>
+                <p>5. health/sc 天赋：用等级表示，Common Health 为 C（Un、R 同理），Rare Health+Legendary Second Chance 为 L（M
+                    同理）。</p>
+            </div>
+        </details>
+
+        <div class="author-info">
+            <p>版本：v2.0.0 | 更新于 2026.11.12</p>
+            <p>原作者：Hu0_gu0_4u31（florr：Huo_guo_tu31）</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script>
+    let pyodideReady = false;
+    let pyodide;
+
+    // --- 模态框逻辑 ---
+    function toggleModal() {
+        const modal = document.getElementById('changelogModal');
+        if (modal.style.display === 'flex') {
+            modal.style.display = 'none';
+        } else {
+            modal.style.display = 'flex';
+        }
+    }
+    // 点击模态框外部关闭
+    window.onclick = function(event) {
+        const modal = document.getElementById('changelogModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // --- 生物体伤/护甲切档逻辑 ---
+    const HP_TIERS_X = [1, 2187, 3645, 6561, 7290, 10935, 14580, 18225, 21870, 32805, 36450, 43740, 54675, 65610, 76545, 87480, 109350, 2147483647];
+    const HP_TIERS_Y = [0, 194.4, 583.2, 2041.2, 4228.2, 4957.2, 7873.2, 11518.2, 22453.2];
+
+    // --- 攻击范围角切档逻辑 ---
+    const ANGLE_TIERS = [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 138, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330];
+
+    function stepX(dir) {
+        const xInput = document.getElementById('x');
+        let val = parseFloat(xInput.value);
+        if (isNaN(val) || val <= 0) val = 1;
+        if (dir > 0) {
+            let nextTier = HP_TIERS_X.find(t => t > val);
+            xInput.value = nextTier !== undefined ? nextTier : HP_TIERS_X[HP_TIERS_X.length - 1];
+        } else {
+            let prevTier = null;
+            for (let i = HP_TIERS_X.length - 1; i >= 0; i--) {
+                if (HP_TIERS_X[i] < val) { prevTier = HP_TIERS_X[i]; break; }
+            }
+            xInput.value = prevTier !== null ? prevTier : HP_TIERS_X[0];
+        }
+    }
+
+    function stepY(dir) {
+        const yInput = document.getElementById('y');
+        let val = parseFloat(yInput.value);
+        if (isNaN(val)) val = 583.2;
+        if (dir > 0) {
+            let nextTier = HP_TIERS_Y.find(t => t > val);
+            yInput.value = nextTier !== undefined ? nextTier : 2147483647;
+        } else {
+            let prevTier = null;
+            for (let i = HP_TIERS_Y.length - 1; i >= 0; i--) {
+                if (HP_TIERS_Y[i] < val) { prevTier = HP_TIERS_Y[i]; break; }
+            }
+            yInput.value = prevTier !== null ? prevTier : -2147483648;
+        }
+    }
+
+    // --- 模式切换逻辑 ---
+    function handleModeChange() {
+        const mode = document.getElementById('mode').value;
+        const angleContainer = document.getElementById('angle-container');
+        const lentildisContainer = document.getElementById('lentildis-container');
+        const rotspeedContainer = document.getElementById('rotspeed-container');
+
+        const angleInput = document.getElementById('angle');
+        const lentildisInput = document.getElementById('lentildis');
+        const rotspeedInput = document.getElementById('rotspeed');
+
+        if (mode === 'wheel') {
+            angleInput.disabled = false;
+            angleInput.value = '138°';
+            angleContainer.classList.remove('disabled');
+
+            rotspeedInput.disabled = false;
+            rotspeedContainer.classList.remove('disabled');
+
+            lentildisInput.disabled = true;
+            lentildisContainer.classList.add('disabled');
+        } else {
+            angleInput.disabled = true;
+            angleInput.value = '360°';
+            angleContainer.classList.add('disabled');
+
+            rotspeedInput.disabled = true;
+            rotspeedContainer.classList.add('disabled');
+
+            lentildisInput.disabled = false;
+            lentildisContainer.classList.remove('disabled');
+        }
+    }
+
+    // --- 攻击范围角微调逻辑 ---
+    function stepAngle(dir) {
+        const angleInput = document.getElementById('angle');
+        let val = parseFloat(angleInput.value);
+        if (isNaN(val)) val = 138;
+
+        if (dir > 0) {
+            let nextTier = ANGLE_TIERS.find(t => t > val);
+            angleInput.value = (nextTier !== undefined ? nextTier : ANGLE_TIERS[ANGLE_TIERS.length - 1]) + '°';
+        } else {
+            let prevTier = null;
+            for (let i = ANGLE_TIERS.length - 1; i >= 0; i--) {
+                if (ANGLE_TIERS[i] < val) { prevTier = ANGLE_TIERS[i]; break; }
+            }
+            angleInput.value = (prevTier !== null ? prevTier : ANGLE_TIERS[0]) + '°';
+        }
+    }
+
+    function initInputs() {
+        const xInput = document.getElementById('x');
+        const yInput = document.getElementById('y');
+        const angleInput = document.getElementById('angle');
+        const rotspeedInput = document.getElementById('rotspeed');
+        const lentildisInput = document.getElementById('lentildis');
+
+        // X 监听
+        xInput.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp') { e.preventDefault(); stepX(1); }
+            else if (e.key === 'ArrowDown') { e.preventDefault(); stepX(-1); }
+        });
+        xInput.addEventListener('blur', function() {
+            let val = parseFloat(xInput.value);
+            if (isNaN(val) || val <= 0) xInput.value = HP_TIERS_X[0];
+            else if (val > 2147483647) xInput.value = 2147483647;
+            else xInput.value = val;
+        });
+        xInput.addEventListener('wheel', function(e) { e.preventDefault(); }, { passive: false });
+
+        // Y 监听
+        yInput.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp') { e.preventDefault(); stepY(1); }
+            else if (e.key === 'ArrowDown') { e.preventDefault(); stepY(-1); }
+        });
+        yInput.addEventListener('blur', function() {
+            let val = parseFloat(yInput.value);
+            if (isNaN(val)) yInput.value = 583.2;
+            else if (val < -2147483648) yInput.value = -2147483648;
+            else if (val > 2147483647) yInput.value = 2147483647;
+            else yInput.value = val;
+        });
+        yInput.addEventListener('wheel', function(e) { e.preventDefault(); }, { passive: false });
+
+        // Lentil 距离钳制
+        lentildisInput.addEventListener('blur', function() {
+            let val = parseFloat(lentildisInput.value);
+            if (isNaN(val) || val < 0) lentildisInput.value = 0;
+            else if (val > 2147483647) lentildisInput.value = 2147483647;
+            else lentildisInput.value = val;
+        });
+
+        // 转速指令值监听
+        rotspeedInput.addEventListener('blur', function() {
+            let val = parseFloat(rotspeedInput.value);
+            if (isNaN(val) || val < 0) val = 0;
+            else if (val > 1) val = 1;
+            rotspeedInput.value = val;
+        });
+
+        // 攻击范围角格式化及键盘上下键步进
+        angleInput.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp') { e.preventDefault(); stepAngle(1); }
+            else if (e.key === 'ArrowDown') { e.preventDefault(); stepAngle(-1); }
+        });
+        angleInput.addEventListener('blur', function() {
+            let val = parseFloat(angleInput.value);
+            if (isNaN(val)) {
+                val = document.getElementById('mode').value === 'wheel' ? 138 : 360;
+            } else {
+                val = Math.max(0, Math.min(330, val));
+            }
+            angleInput.value = val + '°';
+        });
+        angleInput.addEventListener('wheel', function(e) { e.preventDefault(); }, { passive: false });
+
+        // 初始检查模式
+        handleModeChange();
+    }
+
+    // --- 实时 TP 计算逻辑 ---
+    const TP_DATA = {
+        ph: {"-": 0, "C": 2, "Un": 6, "R": 12, "E": 20, "L": 30, "M": 42, "U": 56, "S": 72, "Et": 90},
+        reload: {"-": 0, "C": 2, "Un": 8, "R": 18, "E": 30, "L": 46, "M": 66, "U": 90, "S": 118, "Et": 150},
+        summon: {"-": 0, "C": 2, "Un": 7, "R": 15, "E": 26, "L": 40, "M": 57, "U": 77, "S": 100, "Et": 126},
+        luck: {"-": 0, "C": 2, "Un": 5, "R": 9, "E": 14, "L": 20, "M": 27, "U": 35, "S": 44, "Et": 54},
+        poison: {"-": 0, "1": 1, "2": 3, "3": 6, "4": 9, "5": 12, "6": 15, "7": 18, "8": 21, "9": 24},
+        cpoison: {"-": 0, "1": 15},
+        dup: {"-": 0, "L": 10, "U": 30, "S": 60, "Et": 100},
+        rot: {"-": 0, "C": 1, "Un": 3, "R": 6, "E": 10, "L": 15},
+        reach: {"-": 0, "R": 3, "M": 9, "S": 18},
+        health: {"-": 0, "C": 2, "Un": 7, "R": 15, "L": 25, "M": 45}
+    };
+
+    function calcLevel(tp) {
+        for (let lv = 1; lv < 999; lv++) {
+            let t = Math.floor(lv / 10) * 20;
+            if (lv % 10 <= 4) {
+                t += (lv % 10) - 1;
+            } else {
+                t += lv % 10;
+            }
+            if (t >= tp) return lv;
+        }
+        return 999;
+    }
+
+    function updateTP() {
+        let totalTp = 45;
+        totalTp += TP_DATA.ph[document.getElementById('t-ph').value];
+        totalTp += TP_DATA.reload[document.getElementById('t-reload').value];
+        totalTp += TP_DATA.summon[document.getElementById('t-summon').value];
+        totalTp += TP_DATA.luck[document.getElementById('t-luck').value];
+        totalTp += TP_DATA.poison[document.getElementById('t-poison').value];
+        totalTp += TP_DATA.cpoison[document.getElementById('t-cpoison').value];
+        totalTp += TP_DATA.dup[document.getElementById('t-dup').value];
+        totalTp += TP_DATA.rot[document.getElementById('t-rot').value];
+        totalTp += TP_DATA.reach[document.getElementById('t-reach').value];
+        totalTp += TP_DATA.health[document.getElementById('t-health').value];
+
+        const lvl = calcLevel(totalTp);
+        document.getElementById('tp-display').value = `${totalTp}TP/lv${lvl}`;
+    }
+
+    // --- Pyodide 初始化与计算逻辑 ---
+    async function initPyodide() {
+        try {
+            const outputDiv = document.getElementById('output-container');
+            outputDiv.innerHTML = '正在下载 Python 环境，请稍候...';
+
+            pyodide = await loadPyodide();
+
+            outputDiv.innerHTML = '正在读取 Python 核心文件...';
+            const response = await fetch("DPS%20Build%20Analyzer.py?t=" + new Date().getTime());
+            if (!response.ok) throw new Error(`无法加载 Python 文件 (HTTP ${response.status})`);
+            const pythonCode = await response.text();
+
+            outputDiv.innerHTML = '正在初始化计算引擎...';
+            await pyodide.runPythonAsync(pythonCode);
+
+            pyodideReady = true;
+            const btn = document.getElementById('calc-btn');
+            btn.disabled = false;
+            btn.textContent = '计算 DPS';
+            outputDiv.innerHTML = '就绪！';
+
+        } catch (err) {
+            console.error('初始化失败:', err);
+            document.getElementById('output-container').innerHTML = `<span style="color: #ef4444;">初始化失败：\n${err.message}\n请确保你的 Python 文件名是 "DPS Build Analyzer.py" 并且和 HTML 在同一目录下。\n按 F12 查看控制台详细报错。</span>`;
+        }
+    }
+
+    initInputs();
+    updateTP();
+    initPyodide();
+
+    document.getElementById('calc-btn').addEventListener('click', () => {
+        if (!pyodideReady) return;
+
+        const btn = document.getElementById('calc-btn');
+        const outputDiv = document.getElementById('output-container');
+
+        btn.disabled = true;
+        btn.textContent = '计算中...';
+        outputDiv.innerHTML = '正在计算...';
+
+        setTimeout(() => {
+            try {
+                const build = document.getElementById('build').value;
+
+                let x = parseFloat(document.getElementById('x').value);
+                if (isNaN(x) || x <= 0) x = 1;
+                x = Math.min(2147483647, x);
+
+                let y = parseFloat(document.getElementById('y').value);
+                if (isNaN(y)) y = 583.2;
+                y = Math.max(-2147483648, Math.min(2147483647, y));
+
+                const mode = document.getElementById('mode').value;
+
+                let lentildis = parseFloat(document.getElementById('lentildis').value);
+                if (isNaN(lentildis) || lentildis < 0) lentildis = 0;
+                else if (lentildis > 2147483647) lentildis = 2147483647;
+
+                let rotspeed = parseFloat(document.getElementById('rotspeed').value);
+                if (isNaN(rotspeed) || rotspeed < 0) rotspeed = 0;
+                else if (rotspeed > 1) rotspeed = 1;
+
+                let angleStr = document.getElementById('angle').value;
+                let angle = parseFloat(angleStr);
+                if (isNaN(angle)) {
+                    angle = (mode === 'wheel') ? 138 : 360;
+                } else {
+                    angle = Math.max(0, Math.min(330, angle));
+                }
+
+                const tValues = [
+                    document.getElementById('t-ph').value,
+                    document.getElementById('t-reload').value,
+                    document.getElementById('t-summon').value,
+                    document.getElementById('t-luck').value,
+                    document.getElementById('t-poison').value,
+                    document.getElementById('t-cpoison').value,
+                    document.getElementById('t-dup').value,
+                    document.getElementById('t-rot').value,
+                    document.getElementById('t-reach').value,
+                    document.getElementById('t-health').value
+                ];
+                const talent = tValues.join(' ');
+
+                pyodide.globals.set("js_build", build);
+                pyodide.globals.set("js_talent", talent);
+                pyodide.globals.set("js_x", x);
+                pyodide.globals.set("js_y", y);
+                pyodide.globals.set("js_mode", mode);
+                pyodide.globals.set("js_lentildis", lentildis);
+                pyodide.globals.set("js_rotspeed", rotspeed);
+                pyodide.globals.set("js_angle", angle);
+
+                const resultStr = pyodide.runPython(`
+analyze_for_web(js_build, js_talent, js_x, js_y, js_mode, js_lentildis, js_rotspeed, js_angle)
+                `);
+
+                const result = JSON.parse(resultStr);
+
+                if (result.error) {
+                    outputDiv.innerHTML = `<span style="color: #ef4444;">计算错误：${result.error}</span>`;
+                } else {
+                    renderTable(result, outputDiv);
+                }
+
+            } catch (error) {
+                outputDiv.innerHTML = `<span style="color: #ef4444;">运行出错：\n${error}</span>`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '计算 DPS';
+            }
+        }, 50);
+    });
+
+    function renderTable(data, container) {
+        let html = '';
+
+        if (data.tp_info || (data.wheel_info && data.wheel_info.length > 0)) {
+            html += `<div class="extra-info">`;
+            if (data.tp_info) {
+                let formattedTp = data.tp_info.replace("TP Cost:", `<span class="tp-highlight">TP Cost:</span>`);
+                html += `<div>${formattedTp}</div>`;
+            }
+            if (data.wheel_info && data.wheel_info.length > 0) {
+                html += `<div class="wheel-text">${data.wheel_info.join('<br>')}</div>`;
+            }
+            html += `</div>`;
+        }
+
+        html += `<table class="dps-table">`;
+
+        html += `<tr>`;
+        html += `<th>花瓣</th>`;
+        data.builds.forEach(b => {
+            html += `<th>${b}</th>`;
+        });
+        html += `<th class="col-total">总计</th>`;
+        html += `</tr>`;
+
+        html += `<tr>`;
+        html += `<td>DPS</td>`;
+        data.dps.forEach(d => {
+            html += `<td>${d}</td>`;
+        });
+        html += `<td class="col-total">${data.total}</td>`;
+        html += `</tr>`;
+
+        html += `</table>`;
+
+        container.innerHTML = html;
+    }
+
+    function setTalents(ph, reload, summon, luck, poison, cpoison, dup, rot, reach, health) {
+        document.getElementById('t-ph').value = ph;
+        document.getElementById('t-reload').value = reload;
+        document.getElementById('t-summon').value = summon;
+        document.getElementById('t-luck').value = luck;
+        document.getElementById('t-poison').value = poison;
+        document.getElementById('t-cpoison').value = cpoison;
+        document.getElementById('t-dup').value = dup;
+        document.getElementById('t-rot').value = rot;
+        document.getElementById('t-reach').value = reach;
+        document.getElementById('t-health').value = health;
+        updateTP();
+    }
+
+    function loadExample(type) {
+        const buildInput = document.getElementById('build');
+        const modeSelect = document.getElementById('mode');
+        const xInput = document.getElementById('x');
+        const yInput = document.getElementById('y');
+        const lentildisInput = document.getElementById('lentildis');
+        const rotspeedInput = document.getElementById('rotspeed');
+
+        xInput.value = 21870;
+        yInput.value = 583.2;
+        lentildisInput.value = 0;
+        rotspeedInput.value = 1;
+
+        if (type === 'dup sawblade') {
+            buildInput.value = 'sawblade 6ugl_';
+            modeSelect.value = 'yy';
+            setTalents('M', 'Et', '-', '-', '-', '-', 'S', '-', 'R', 'C');
+        } else if (type === 'chip yy') {
+            buildInput.value = '2chip bur_ 6ugl_';
+            modeSelect.value = 'yy';
+            setTalents('-', 'Et', '-', '-', '-', '-', 'S', '-', 'R', 'M');
+        } else if (type === 'dust lentil 1') {
+            buildInput.value = '2ugl 4dust bur 2ulentil';
+            modeSelect.value = 'lentil';
+            setTalents('-', 'Et', '-', '-', '-', '-', 'S', '-', 'R', 'M');
+            lentildisInput.value = 0;
+        } else if (type === 'dust lentil 2') {
+            buildInput.value = '2ugl 4dust bur 2ulentil';
+            modeSelect.value = 'lentil';
+            setTalents('-', 'Et', '-', '-', '-', '-', 'S', '-', 'R', 'M');
+            lentildisInput.value = 112;
+        } else if (type === 'triangle wheel') {
+            buildInput.value = 'faster 9triangle';
+            modeSelect.value = 'wheel';
+            setTalents('Et', 'U', '-', '-', '-', '-', '-', 'L', 'S', 'M');
+            xInput.value = 7290;
+            rotspeedInput.value = 1;
+            document.getElementById('angle').value = '138°';
+        } else if (type === '2.5s wheel') {
+            buildInput.value = 'faster sawblade sawblade bean_1 bone corn leaf rock';
+            modeSelect.value = 'wheel';
+            setTalents('Et', 'U', '-', '-', '-', '-', '-', 'L', 'S', 'M');
+            xInput.value = 7290;
+            rotspeedInput.value = 1;
+            document.getElementById('angle').value = '138°';
+        }
+
+        handleModeChange();
+        if (type === 'triangle wheel' || type === '2.5s wheel') {
+            document.getElementById('angle').value = '138°';
+        }
+    }
+
+
+</script>
+</body>
+</html>
