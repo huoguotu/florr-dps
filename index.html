@@ -458,17 +458,18 @@
     <div class="modal-content">
         <span class="close-btn" onclick="toggleModal()">&times;</span>
         <h2>更新日志</h2>
+        <h3>v2.0.1 (2026.11.13)</h3>
+        <ul>
+            <li>彻底移除 Pyodide 依赖，核心计算重写为原生 JavaScript</li>
+            <li>网页无需下载 10MB 计算引擎，打开即秒算</li>
+            <li>修复已知问题</li>
+        </ul>
         <h3>v2.0.0 (2026.11.12)</h3>
         <ul>
             <li>网页版本发布</li>
             <li>新增了实时 TP 计算和等级显示</li>
             <li>新增了攻击范围角（Angle）计算</li>
             <li>重构了界面，支持响应式布局</li>
-            <li>修复已知问题</li>
-        </ul>
-        <h3>v1.0.0 (2026.10.24)</h3>
-        <ul>
-            <li>初始Python终端版本发布</li>
         </ul>
     </div>
 </div>
@@ -527,7 +528,6 @@
             <div class="form-group">
                 <label>转速指令值</label>
                 <div class="number-input-container" id="rotspeed-container">
-                    <!-- 使用系统自带箭头 -->
                     <input type="number" id="rotspeed" value="1" min="0" max="1" step="0.05">
                 </div>
             </div>
@@ -645,7 +645,7 @@
         </div>
 
         <div class="button-group">
-            <button id="calc-btn" class="btn-primary btn-action" disabled>加载计算引擎中...</button>
+            <button id="calc-btn" class="btn-primary btn-action" disabled>加载中...</button>
             <button class="btn-secondary btn-action" onclick="loadExample('dup sawblade')">示例：dup sawblade</button>
             <button class="btn-secondary btn-action" onclick="loadExample('chip yy')">示例：chip yy</button>
             <button class="btn-secondary btn-action" onclick="loadExample('dust lentil 1')">示例：dust lentil 1</button>
@@ -656,7 +656,7 @@
         </div>
     </div>
 
-    <div id="output-container" class="output-container">等待加载 Python 环境...</div>
+    <div id="output-container" class="output-container">正在初始化计算引擎...</div>
 
     <div class="footer">
         <details open>
@@ -726,17 +726,15 @@
         </details>
 
         <div class="author-info">
-            <p>版本：v2.0.0 | 更新于 2026.11.12</p>
+            <p>版本：v2.0.1 | 更新于 2026.11.13</p>
             <p>原作者：Hu0_gu0_4u31（florr：Huo_guo_tu31）</p>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<!-- 引入核心计算逻辑 -->
+<script src="DPS%20Build%20Analyzer.js"></script>
 <script>
-    let pyodideReady = false;
-    let pyodide;
-
     // --- 模态框逻辑 ---
     function toggleModal() {
         const modal = document.getElementById('changelogModal');
@@ -746,7 +744,6 @@
             modal.style.display = 'flex';
         }
     }
-    // 点击模态框外部关闭
     window.onclick = function(event) {
         const modal = document.getElementById('changelogModal');
         if (event.target === modal) {
@@ -757,8 +754,6 @@
     // --- 生物体伤/护甲切档逻辑 ---
     const HP_TIERS_X = [1, 2187, 3645, 6561, 7290, 10935, 14580, 18225, 21870, 32805, 36450, 43740, 54675, 65610, 76545, 87480, 109350, 2147483647];
     const HP_TIERS_Y = [0, 194.4, 583.2, 2041.2, 4228.2, 4957.2, 7873.2, 11518.2, 22453.2];
-
-    // --- 攻击范围角切档逻辑 ---
     const ANGLE_TIERS = [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 138, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330];
 
     function stepX(dir) {
@@ -793,7 +788,6 @@
         }
     }
 
-    // --- 模式切换逻辑 ---
     function handleModeChange() {
         const mode = document.getElementById('mode').value;
         const angleContainer = document.getElementById('angle-container');
@@ -827,7 +821,6 @@
         }
     }
 
-    // --- 攻击范围角微调逻辑 ---
     function stepAngle(dir) {
         const angleInput = document.getElementById('angle');
         let val = parseFloat(angleInput.value);
@@ -852,7 +845,6 @@
         const rotspeedInput = document.getElementById('rotspeed');
         const lentildisInput = document.getElementById('lentildis');
 
-        // X 监听
         xInput.addEventListener('keydown', function(e) {
             if (e.key === 'ArrowUp') { e.preventDefault(); stepX(1); }
             else if (e.key === 'ArrowDown') { e.preventDefault(); stepX(-1); }
@@ -865,7 +857,6 @@
         });
         xInput.addEventListener('wheel', function(e) { e.preventDefault(); }, { passive: false });
 
-        // Y 监听
         yInput.addEventListener('keydown', function(e) {
             if (e.key === 'ArrowUp') { e.preventDefault(); stepY(1); }
             else if (e.key === 'ArrowDown') { e.preventDefault(); stepY(-1); }
@@ -879,7 +870,6 @@
         });
         yInput.addEventListener('wheel', function(e) { e.preventDefault(); }, { passive: false });
 
-        // Lentil 距离钳制
         lentildisInput.addEventListener('blur', function() {
             let val = parseFloat(lentildisInput.value);
             if (isNaN(val) || val < 0) lentildisInput.value = 0;
@@ -887,7 +877,6 @@
             else lentildisInput.value = val;
         });
 
-        // 转速指令值监听
         rotspeedInput.addEventListener('blur', function() {
             let val = parseFloat(rotspeedInput.value);
             if (isNaN(val) || val < 0) val = 0;
@@ -895,7 +884,6 @@
             rotspeedInput.value = val;
         });
 
-        // 攻击范围角格式化及键盘上下键步进
         angleInput.addEventListener('keydown', function(e) {
             if (e.key === 'ArrowUp') { e.preventDefault(); stepAngle(1); }
             else if (e.key === 'ArrowDown') { e.preventDefault(); stepAngle(-1); }
@@ -911,7 +899,6 @@
         });
         angleInput.addEventListener('wheel', function(e) { e.preventDefault(); }, { passive: false });
 
-        // 初始检查模式
         handleModeChange();
     }
 
@@ -959,41 +946,20 @@
         document.getElementById('tp-display').value = `${totalTp}TP/lv${lvl}`;
     }
 
-    // --- Pyodide 初始化与计算逻辑 ---
-    async function initPyodide() {
-        try {
-            const outputDiv = document.getElementById('output-container');
-            outputDiv.innerHTML = '正在下载 Python 环境，请稍候...';
+    // --- 初始化与计算逻辑 ---
+    function init() {
+        initInputs();
+        updateTP();
 
-            pyodide = await loadPyodide();
-
-            outputDiv.innerHTML = '正在读取 Python 核心文件...';
-            const response = await fetch("DPS%20Build%20Analyzer.py?t=" + new Date().getTime());
-            if (!response.ok) throw new Error(`无法加载 Python 文件 (HTTP ${response.status})`);
-            const pythonCode = await response.text();
-
-            outputDiv.innerHTML = '正在初始化计算引擎...';
-            await pyodide.runPythonAsync(pythonCode);
-
-            pyodideReady = true;
-            const btn = document.getElementById('calc-btn');
-            btn.disabled = false;
-            btn.textContent = '计算 DPS';
-            outputDiv.innerHTML = '就绪！';
-
-        } catch (err) {
-            console.error('初始化失败:', err);
-            document.getElementById('output-container').innerHTML = `<span style="color: #ef4444;">初始化失败：\n${err.message}\n请确保你的 Python 文件名是 "DPS Build Analyzer.py" 并且和 HTML 在同一目录下。\n按 F12 查看控制台详细报错。</span>`;
-        }
+        const btn = document.getElementById('calc-btn');
+        btn.disabled = false;
+        btn.textContent = '计算 DPS';
+        document.getElementById('output-container').innerHTML = '就绪！';
     }
 
-    initInputs();
-    updateTP();
-    initPyodide();
+    window.onload = init;
 
     document.getElementById('calc-btn').addEventListener('click', () => {
-        if (!pyodideReady) return;
-
         const btn = document.getElementById('calc-btn');
         const outputDiv = document.getElementById('output-container');
 
@@ -1045,20 +1011,7 @@
                 ];
                 const talent = tValues.join(' ');
 
-                pyodide.globals.set("js_build", build);
-                pyodide.globals.set("js_talent", talent);
-                pyodide.globals.set("js_x", x);
-                pyodide.globals.set("js_y", y);
-                pyodide.globals.set("js_mode", mode);
-                pyodide.globals.set("js_lentildis", lentildis);
-                pyodide.globals.set("js_rotspeed", rotspeed);
-                pyodide.globals.set("js_angle", angle);
-
-                const resultStr = pyodide.runPython(`
-analyze_for_web(js_build, js_talent, js_x, js_y, js_mode, js_lentildis, js_rotspeed, js_angle)
-                `);
-
-                const result = JSON.parse(resultStr);
+                const result = analyze_for_web(build, talent, x, y, mode, lentildis, rotspeed, angle);
 
                 if (result.error) {
                     outputDiv.innerHTML = `<span style="color: #ef4444;">计算错误：${result.error}</span>`;
