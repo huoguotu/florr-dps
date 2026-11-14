@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPS Build Analyzer v2.0.2</title>
+    <title>DPS Build Analyzer v2.1.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
@@ -286,11 +286,6 @@
             font-family: "Consolas", "Courier New", monospace;
         }
 
-        .tp-highlight {
-            color: #93c5fd;
-            font-weight: 500;
-        }
-
         .wheel-text {
             color: var(--text-muted);
         }
@@ -462,6 +457,15 @@
     <div class="modal-content">
         <span class="close-btn" onclick="toggleModal()">&times;</span>
         <h2>更新日志</h2>
+        <h3>v2.1.0 (2026.11.14)</h3>
+        <ul>
+            <li>增加兼容性，s 花瓣现在可以标等级也可以不标等级</li>
+            <li>修复部分增益类花瓣可以叠加的 bug，现在 bur、clover 的增益不可叠加</li>
+            <li>修改毒伤计算方式，现不可叠加，在输出最后会显示总毒伤</li>
+            <li>修改 privet 输入方式，现在只需输入 privet，不再支持 privet_xx 后缀</li>
+            <li>移除输出表格上方的 TP Cost（已在天赋界面显示）</li>
+            <li>修复其它已知 bug</li>
+        </ul>
         <h3>v2.0.2 (2026.11.13)</h3>
         <ul>
             <li>调整攻击范围角的钳制范围为 0°~180°（防止 180° 以上 wheel dps 偏大）</li>
@@ -489,7 +493,7 @@
 
 <div class="container">
     <div class="header">
-        <h1>DPS Build Analyzer</h1>
+        <h1>DPS Build Analyzer v2.1.0</h1>
         <p>花瓣 / 天赋 / 生物体伤 / 生物护甲 → 各花瓣 DPS 与总 DPS</p>
     </div>
 
@@ -625,7 +629,7 @@
         <details>
             <summary>花瓣（构筑）输入规范</summary>
             <div class="details-content">
-                <p>1. 各花瓣名用空格隔开，s 不标等级，其它要标等级（例：usawblade、pearl、qcoin）。</p>
+                <p>1. 各花瓣名用空格隔开，s 可以不标等级，其它要标等级（例：usawblade、pearl、qcoin）。</p>
                 <p>2. 花瓣前可加数字表示多个同一花瓣（例：2bone、3claw）。</p>
                 <p>3. 目前支持的花瓣：所有 u/s/q 等级的一帧十判花瓣（部分魔法花瓣除外）、部分非一帧十判花瓣。</p>
                 <p>4. 花瓣名的特殊情况：</p>
@@ -647,12 +651,12 @@
                             <li>pearl_0：不发射（无额外时间）；1：发射（额外时间0.5s）；默认为 0</li>
                             <li>peas：同 grapes</li>
                             <li>pollen_0：不发射（无额外时间）；1：发射（额外时间0.5s）；默认为 1</li>
-                            <li>privet_xx：xx 表示 privet 对应毒 dps 花瓣缩写，ugrapes 为 ug，siris 为 i，qpincer 为 qp，以此类推</li>
                             <li>tomato_0：最低伤害；1：最高伤害（额外时间1s）</li>
                         </ul>
                     </li>
                 </ul>
                 <p>5. 如果花瓣不计入 dps（bur、dl、gl 等）但仍发挥其效果，在后面加上单个下划线 _ （例：ugl_）。</p>
+                <p>6. <strong>注意</strong>：<code>bur</code>、<code>clover</code> 的增益不可叠加，<code>privet</code> 现在只需输入 <code>privet</code>，不再支持后缀区分。</p>
             </div>
         </details>
 
@@ -668,7 +672,7 @@
         </details>
 
         <div class="author-info">
-            <p>版本：v2.0.2 | 更新于 2026.11.13</p>
+            <p>版本：v2.1.0 | 更新于 2026.11.14</p>
             <p>原作者：Hu0_gu0_4u31（florr：Huo_guo_tu31）</p>
         </div>
     </div>
@@ -976,15 +980,9 @@
     function renderTable(data, container) {
         let html = '';
 
-        if (data.tp_info || (data.wheel_info && data.wheel_info.length > 0)) {
+        if (data.wheel_info && data.wheel_info.length > 0) {
             html += `<div class="extra-info">`;
-            if (data.tp_info) {
-                let formattedTp = data.tp_info.replace("TP Cost:", `<span class="tp-highlight">TP Cost:</span>`);
-                html += `<div>${formattedTp}</div>`;
-            }
-            if (data.wheel_info && data.wheel_info.length > 0) {
-                html += `<div class="wheel-text">${data.wheel_info.join('<br>')}</div>`;
-            }
+            html += `<div class="wheel-text">${data.wheel_info.join('<br>')}</div>`;
             html += `</div>`;
         }
 
@@ -1041,7 +1039,6 @@
         if (type === 'double Et claw') {
             buildInput.value = '3claw 4ugl_';
             modeSelect.value = 'yy';
-            // 修改了这里，dup 从 S 改为了 -
             setTalents('Et', 'Et', '-', '-', '-', '-', '-', '-', 'M', 'Un');
         } else if (type === 'dup sawblade') {
             buildInput.value = 'sawblade 6ugl_';
