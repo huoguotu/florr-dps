@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPS Build Analyzer v2.1.0</title>
+    <title>DPS Build Analyzer v2.2.0</title>
     <!-- 使用本地准备好的 favicon.png -->
     <link rel="icon" type="image/png" href="favicon.png">
 
@@ -140,7 +140,7 @@
             align-items: center;
             width: 100%;
         }
-        
+
         .number-input-container input:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -448,7 +448,8 @@
                 font-size: 12px;
             }
         }
-    
+
+
     </style>
 </head>
 <body>
@@ -461,6 +462,12 @@
     <div class="modal-content">
         <span class="close-btn" onclick="toggleModal()">&times;</span>
         <h2>更新日志</h2>
+        <h3>v2.2.0 (2026.11.14)</h3>
+        <ul>
+            <li>新增“生物”输入框，输入生物名称可自动填充对应体伤与护甲</li>
+            <li>生物体伤新增档位 2916、8748、25515、29160，优化上下微调体验</li>
+            <li>修复其它已知 bug</li>
+        </ul>
         <h3>v2.1.0 (2026.11.14)</h3>
         <ul>
             <li>增加兼容性，s 花瓣现在可以标等级也可以不标等级</li>
@@ -497,15 +504,20 @@
 
 <div class="container">
     <div class="header">
-        <h1>DPS Build Analyzer v2.1.0</h1>
+        <h1>DPS Build Analyzer v2.2.0</h1>
         <p>花瓣 / 天赋 / 生物体伤 / 生物护甲 → 各花瓣 DPS 与总 DPS</p>
     </div>
 
     <div class="panel">
         <div class="form-grid-1">
-            <div class="form-group" style="grid-column: span 4;">
+            <div class="form-group" style="grid-column: span 3;">
                 <label>花瓣（空格分隔，可加数量前缀）</label>
                 <input type="text" id="build" value="">
+            </div>
+
+            <div class="form-group">
+                <label>生物（自动填体伤/护甲）</label>
+                <input type="text" id="mob" value="" placeholder="例：uscorpion" autocomplete="off">
             </div>
 
             <div class="form-group">
@@ -700,6 +712,8 @@
                         1），以及在“攻击范围角”输入框填写攻击范围角（默认值为 138°）。
                     </li>
                 </ul>
+                <p>4. “生物”输入框支持快捷输入生物名称（如
+                    uscorpion），系统将自动填充对应的体伤与护甲，手动修改体伤或护甲会自动清空该框。</p>
             </div>
         </details>
 
@@ -757,7 +771,7 @@
         </details>
 
         <div class="author-info">
-            <p>版本：v2.1.0 | 更新于 2026.11.14</p>
+            <p>版本：v2.2.0 | 更新于 2026.11.14</p>
             <p>原作者：Hu0_gu0_4u31（florr：Huo_guo_tu31）</p>
         </div>
     </div>
@@ -783,11 +797,56 @@
     }
 
     // --- 生物体伤/护甲切档逻辑 ---
-    const HP_TIERS_X = [1, 2187, 3645, 6561, 7290, 10935, 14580, 18225, 21870, 32805, 36450, 43740, 54675, 65610, 76545, 87480, 109350, 2147483647];
+    const HP_TIERS_X = [1, 2187, 2916, 3645, 6561, 7290, 8748, 10935, 14580, 18225, 21870, 25515, 29160, 32805, 36450, 43740, 54675, 65610, 76545, 87480, 109350, 2147483647];
     const HP_TIERS_Y = [0, 194.4, 583.2, 2041.2, 4228.2, 4957.2, 7873.2, 11518.2, 22453.2];
-    
+
     // 最大为 180°
     const ANGLE_TIERS = [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 138, 150, 165, 180];
+
+    // 生物数据字典
+    const MOB_GROUPS = [
+        { x: 2187, y: 583.2, names: ["uant_egg", "ufire_ant_egg", "ugarbage", "utermite_egg", "utomb"] },
+        { x: 2916, y: 583.2, names: ["ubarrel"] },
+        { x: 3645, y: 583.2, names: ["ububble", "ufirefly", "umagic_firefly", "uworm_guts"] },
+        { x: 7290, y: 583.2, names: ["utarget_dummy", "ubaby_ant", "ubaby_termite", "ubush", "ucentipede", "udesert_centipede", "uevil_centipede", "ufly", "ughost", "umoth", "uqueen_ant", "urock", "uladybug", "udark_ladybug", "ushiny_ladybug", "uleech", "ushell", "usoldier_ant", "usoldier_termite", "usponge", "usquare", "utermite_overmind", "uworker_ant", "uworket_termite"] },
+        { x: 10935, y: 583.2, names: ["uant_hole", "udandelion", "uscorpion", "uhel_spider", "uspider"] },
+        { x: 14580, y: 583.2, names: ["ubaby_fire_ant", "ubumble_bee", "umantis", "uqueen_fire_ant", "uroach", "usoldier_fire_ant", "ustarfish", "uworker_fire_ant"] },
+        { x: 18225, y: 583.2, names: ["ucrab", "ujellyfish"] },
+        { x: 21870, y: 583.2, names: ["unazar_beetle", "ubeetle", "umummy_beetle", "upharaoh_beetle", "uhel_beetle", "uhel_centipede", "usilverfish", "uworm"] },
+        { x: 25515, y: 583.2, names: ["ucactus"] },
+        { x: 29160, y: 583.2, names: ["usandstorm"] },
+        { x: 36450, y: 583.2, names: ["ubee", "uhornet", "uwasp", "uhel_wasp"] },
+        { x: 10935, y: 2041.2, names: ["umecha_crab"] },
+        { x: 21870, y: 2041.2, names: ["umecha_spider"] },
+        { x: 36450, y: 2041.2, names: ["umecha_wasp"] },
+        { x: 7290, y: 4228.2, names: ["umecha_flower"] },
+        { x: 10935, y: 583.2, names: ["ugambler"] },
+        { x: 21870, y: 7873.2, names: ["uleafbug", "ugolden_leafbug"] },
+        { x: 6561, y: 583.2, names: ["ant_egg", "sant_egg", "fire_ant_egg", "sfire_ant_egg", "garbage", "sgarbage", "termite_egg", "stermite_egg", "tomb", "stomb"] },
+        { x: 8748, y: 583.2, names: ["barrel", "sbarrel"] },
+        { x: 10935, y: 583.2, names: ["bubble", "sbubble", "firefly", "sfirefly", "magic_firefly", "smagic_firefly", "worm_guts", "sworm_guts"] },
+        { x: 21870, y: 583.2, names: ["target_dummy", "starget_dummy", "baby_ant", "sbaby_ant", "baby_termite", "sbaby_termite", "bush", "sbush", "centipede", "scentipede", "desert_centipede", "sdesert_centipede", "evil_centipede", "sevil_centipede", "fly", "sfly", "ghost", "sghost", "moth", "smoth", "queen_ant", "squeen_ant", "rock", "srock", "ladybug", "sladybug", "dark_ladybug", "sdark_ladybug", "shiny_ladybug", "sshiny_ladybug", "leech", "sleech", "shell", "sshell", "soldier_ant", "ssoldier_ant", "soldier_termite", "ssoldier_termite", "sponge", "ssponge", "square", "ssquare", "termite_overmind", "stermite_overmind", "worker_ant", "sworker_ant", "worket_termite", "sworket_termite"] },
+        { x: 32805, y: 583.2, names: ["ant_hole", "sant_hole", "dandelion", "sdandelion", "scorpion", "sscorpion", "hel_spider", "shel_spider", "spider", "sspider"] },
+        { x: 43740, y: 583.2, names: ["baby_fire_ant", "sbaby_fire_ant", "bumble_bee", "sbumble_bee", "mantis", "smantis", "queen_fire_ant", "squeen_fire_ant", "roach", "sroach", "soldier_fire_ant", "ssoldier_fire_ant", "starfish", "sstarfish", "worker_fire_ant", "sworker_fire_ant"] },
+        { x: 54675, y: 583.2, names: ["crab", "scrab", "jellyfish", "sjellyfish"] },
+        { x: 65610, y: 583.2, names: ["nazar_beetle", "snazar_beetle", "beetle", "sbeetle", "mummy_beetle", "smummy_beetle", "pharaoh_beetle", "spharaoh_beetle", "hel_beetle", "shel_beetle", "hel_centipede", "shel_centipede", "silverfish", "ssilverfish", "worm", "sworm"] },
+        { x: 76545, y: 583.2, names: ["cactus", "scactus"] },
+        { x: 87480, y: 583.2, names: ["sandstorm", "ssandstorm"] },
+        { x: 109350, y: 583.2, names: ["bee", "sbee", "hornet", "shornet", "wasp", "swasp", "hel_wasp", "shel_wasp"] },
+        { x: 32805, y: 4957.2, names: ["mecha_crab", "smecha_crab"] },
+        { x: 65610, y: 4957.2, names: ["mecha_spider", "smecha_spider"] },
+        { x: 109350, y: 4957.2, names: ["mecha_wasp", "smecha_wasp"] },
+        { x: 21870, y: 11518.2, names: ["mecha_flower", "smecha_flower"] },
+        { x: 32805, y: 583.2, names: ["gambler", "sgambler"] },
+        { x: 65610, y: 22453.2, names: ["leafbug", "sleafbug", "golden_leafbug", "sgolden_leafbug"] }
+    ];
+
+    const MOB_MAP = {};
+    MOB_GROUPS.forEach(group => {
+        group.names.forEach(name => {
+            MOB_MAP[name] = { x: group.x, y: group.y };
+        });
+    });
 
     function stepX(dir) {
         const xInput = document.getElementById('x');
@@ -803,6 +862,7 @@
             }
             xInput.value = prevTier !== null ? prevTier : HP_TIERS_X[0];
         }
+        document.getElementById('mob').value = '';
     }
 
     function stepY(dir) {
@@ -819,6 +879,7 @@
             }
             yInput.value = prevTier !== null ? prevTier : -2147483648;
         }
+        document.getElementById('mob').value = '';
     }
 
     function handleModeChange() {
@@ -826,14 +887,14 @@
         const angleContainer = document.getElementById('angle-container');
         const lentildisContainer = document.getElementById('lentildis-container');
         const rotspeedContainer = document.getElementById('rotspeed-container');
-        
+
         const angleInput = document.getElementById('angle');
         const lentildisInput = document.getElementById('lentildis');
         const rotspeedInput = document.getElementById('rotspeed');
 
         if (mode === 'wheel') {
             angleInput.disabled = false;
-            angleInput.value = '138°'; 
+            angleInput.value = '138°';
             angleContainer.classList.remove('disabled');
 
             rotspeedInput.disabled = false;
@@ -858,7 +919,7 @@
         const angleInput = document.getElementById('angle');
         let val = parseFloat(angleInput.value);
         if (isNaN(val)) val = 138;
-        
+
         if (dir > 0) {
             let nextTier = ANGLE_TIERS.find(t => t > val);
             angleInput.value = (nextTier !== undefined ? nextTier : ANGLE_TIERS[ANGLE_TIERS.length - 1]) + '°';
@@ -877,6 +938,26 @@
         const angleInput = document.getElementById('angle');
         const rotspeedInput = document.getElementById('rotspeed');
         const lentildisInput = document.getElementById('lentildis');
+        const mobInput = document.getElementById('mob');
+
+        // 监听生物名称输入
+        mobInput.addEventListener('input', function() {
+            let val = mobInput.value.trim();
+            if (MOB_MAP[val]) {
+                xInput.value = MOB_MAP[val].x;
+                yInput.value = MOB_MAP[val].y;
+            }
+        });
+
+        // 如果手动修改体伤，清空生物名称框
+        xInput.addEventListener('input', function() {
+            mobInput.value = '';
+        });
+
+        // 如果手动修改护甲，清空生物名称框
+        yInput.addEventListener('input', function() {
+            mobInput.value = '';
+        });
 
         xInput.addEventListener('keydown', function(e) {
             if (e.key === 'ArrowUp') { e.preventDefault(); stepX(1); }
@@ -921,18 +1002,18 @@
             if (e.key === 'ArrowUp') { e.preventDefault(); stepAngle(1); }
             else if (e.key === 'ArrowDown') { e.preventDefault(); stepAngle(-1); }
         });
-        
+
         angleInput.addEventListener('blur', function() {
             let val = parseFloat(angleInput.value);
             if (isNaN(val)) {
                 val = document.getElementById('mode').value === 'wheel' ? 138 : 360;
             } else {
-                val = Math.max(0, Math.min(180, val)); 
+                val = Math.max(0, Math.min(180, val));
             }
             angleInput.value = val + '°';
         });
         angleInput.addEventListener('wheel', function(e) { e.preventDefault(); }, { passive: false });
-        
+
         handleModeChange();
     }
 
@@ -984,7 +1065,7 @@
     function init() {
         initInputs();
         updateTP();
-        
+
         const btn = document.getElementById('calc-btn');
         btn.disabled = false;
         btn.textContent = '计算 DPS';
@@ -1105,7 +1186,7 @@
         document.getElementById('t-rot').value = rot;
         document.getElementById('t-reach').value = reach;
         document.getElementById('t-health').value = health;
-        updateTP(); 
+        updateTP();
     }
 
     function loadExample(type) {
@@ -1115,7 +1196,9 @@
         const yInput = document.getElementById('y');
         const lentildisInput = document.getElementById('lentildis');
         const rotspeedInput = document.getElementById('rotspeed');
+        const mobInput = document.getElementById('mob');
 
+        mobInput.value = '';
         xInput.value = 21870;
         yInput.value = 583.2;
         lentildisInput.value = 0;
@@ -1158,12 +1241,13 @@
             rotspeedInput.value = 1;
             document.getElementById('angle').value = '138°';
         }
-        
+
         handleModeChange();
         if (type === 'triangle wheel' || type === '2.5s wheel') {
             document.getElementById('angle').value = '138°';
         }
     }
+
 
 
 </script>
