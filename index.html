@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DPS Build Analyzer v2.1.0</title>
+    <!-- 使用本地准备好的 favicon.png -->
+    <link rel="icon" type="image/png" href="favicon.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
@@ -445,6 +448,7 @@
                 font-size: 12px;
             }
         }
+    
     </style>
 </head>
 <body>
@@ -562,36 +566,99 @@
 
         <div class="talent-grid">
             <div class="form-group"><label>ph</label><select id="t-ph" onchange="updateTP()">
-                <option value="-">-</option><option value="C">C</option><option value="Un">Un</option><option value="R">R</option><option value="E">E</option><option value="L">L</option><option value="M">M</option><option value="U">U</option><option value="S">S</option><option value="Et" selected>Et</option>
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="U">U</option>
+                <option value="S">S</option>
+                <option value="Et" selected>Et</option>
             </select></div>
             <div class="form-group"><label>reload</label><select id="t-reload" onchange="updateTP()">
-                <option value="-">-</option><option value="C">C</option><option value="Un">Un</option><option value="R">R</option><option value="E">E</option><option value="L">L</option><option value="M">M</option><option value="U">U</option><option value="S">S</option><option value="Et" selected>Et</option>
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="U">U</option>
+                <option value="S">S</option>
+                <option value="Et" selected>Et</option>
             </select></div>
             <div class="form-group"><label>summon</label><select id="t-summon" onchange="updateTP()">
-                <option value="-">-</option><option value="C">C</option><option value="Un">Un</option><option value="R">R</option><option value="E">E</option><option value="L">L</option><option value="M">M</option><option value="U">U</option><option value="S">S</option><option value="Et">Et</option>
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="U">U</option>
+                <option value="S">S</option>
+                <option value="Et">Et</option>
             </select></div>
             <div class="form-group"><label>luck</label><select id="t-luck" onchange="updateTP()">
-                <option value="-">-</option><option value="C">C</option><option value="Un">Un</option><option value="R">R</option><option value="E">E</option><option value="L">L</option><option value="M">M</option><option value="U">U</option><option value="S">S</option><option value="Et">Et</option>
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="U">U</option>
+                <option value="S">S</option>
+                <option value="Et">Et</option>
             </select></div>
             <div class="form-group"><label>poison</label><select id="t-poison" onchange="updateTP()">
-                <option value="-">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                <option value="-">-</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
             </select></div>
             <div class="form-group"><label>cpoison</label><select id="t-cpoison" onchange="updateTP()">
-                <option value="-">-</option><option value="1">1</option>
+                <option value="-">-</option>
+                <option value="1">1</option>
             </select></div>
             <div class="form-group"><label>dup</label><select id="t-dup" onchange="updateTP()">
-                <option value="-">-</option><option value="L">L</option><option value="U">U</option><option value="S">S</option><option value="Et">Et</option>
+                <option value="-">-</option>
+                <option value="L">L</option>
+                <option value="U">U</option>
+                <option value="S">S</option>
+                <option value="Et">Et</option>
             </select></div>
             <div class="form-group"><label>rot</label><select id="t-rot" onchange="updateTP()">
-                <option value="-">-</option><option value="C">C</option><option value="Un">Un</option><option value="R">R</option><option value="E">E</option><option value="L">L</option>
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
             </select></div>
             <div class="form-group"><label>reach</label><select id="t-reach" onchange="updateTP()">
-                <option value="-">-</option><option value="R">R</option><option value="M">M</option><option value="S">S</option>
+                <option value="-">-</option>
+                <option value="R">R</option>
+                <option value="M">M</option>
+                <option value="S">S</option>
             </select></div>
             <div class="form-group"><label>health</label><select id="t-health" onchange="updateTP()">
-                <option value="-">-</option><option value="C">C</option><option value="Un">Un</option><option value="R">R</option><option value="L">L</option><option value="M">M</option>
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
             </select></div>
-            
+
             <div class="form-group">
                 <label>TP cost/lvl req</label>
                 <input type="text" id="tp-display" value="" readonly placeholder="加载中...">
@@ -600,12 +667,16 @@
 
         <div class="button-group">
             <button id="calc-btn" class="btn-primary btn-action" disabled>加载中...</button>
-            <button class="btn-secondary btn-action" onclick="loadExample('double Et claw')">示例 1：double Et claw</button>
+            <button class="btn-secondary btn-action" onclick="loadExample('double Et claw')">示例 1：double Et claw
+            </button>
             <button class="btn-secondary btn-action" onclick="loadExample('dup sawblade')">示例 2：dup sawblade</button>
             <button class="btn-secondary btn-action" onclick="loadExample('chip yy')">示例 3：chip yy</button>
-            <button class="btn-secondary btn-action" onclick="loadExample('dust lentil 1')">示例 4：dust lentil 1</button>
-            <button class="btn-secondary btn-action" onclick="loadExample('dust lentil 2')">示例 5：dust lentil 2</button>
-            <button class="btn-secondary btn-action" onclick="loadExample('triangle wheel')">示例 6：triangle wheel</button>
+            <button class="btn-secondary btn-action" onclick="loadExample('dust lentil 1')">示例 4：dust lentil 1
+            </button>
+            <button class="btn-secondary btn-action" onclick="loadExample('dust lentil 2')">示例 5：dust lentil 2
+            </button>
+            <button class="btn-secondary btn-action" onclick="loadExample('triangle wheel')">示例 6：triangle wheel
+            </button>
             <button class="btn-secondary btn-action" onclick="loadExample('2.5s wheel')">示例 7：2.5s wheel</button>
         </div>
     </div>
@@ -616,12 +687,18 @@
         <details open>
             <summary>用法</summary>
             <div class="details-content">
-                <p>1. 在上方输入花瓣构筑、通过下拉框配置天赋、填写生物体伤与生物护甲、选择模式，点击“计算 DPS”即可在下方表格输出各花瓣 DPS 以及总 DPS。</p>
+                <p>1. 在上方输入花瓣构筑、通过下拉框配置天赋、填写生物体伤与生物护甲、选择模式，点击“计算 DPS”即可在下方表格输出各花瓣
+                    DPS 以及总 DPS。</p>
                 <p>2. 右侧的“TP cost/lvl req”显示框会实时计算并展示当前所选天赋的 TP 消耗及对应等级。</p>
-                <p>3. 花瓣、天赋、生物体伤、生物护甲为必填项；模式可通过下拉框选择 "lentil"、"yy" 或 "wheel"，默认为 "lentil"。</p>
+                <p>3. 花瓣、天赋、生物体伤、生物护甲为必填项；模式可通过下拉框选择 "lentil"、"yy" 或 "wheel"，默认为
+                    "lentil"。</p>
                 <ul>
-                    <li>模式为 "lentil" 或 "yy" 时，需在“lentil 距离”输入框填写数值（比如填 112 表示 2ulentil 距离；若想得到完全紧贴的理论 dps 可填默认值 0）。</li>
-                    <li>模式为 "wheel" 时，需在“转速指令值”输入框填写转速指令（比如 0.95；默认值为 1），以及在“攻击范围角”输入框填写攻击范围角（默认值为 138°）。</li>
+                    <li>模式为 "lentil" 或 "yy" 时，需在“lentil 距离”输入框填写数值（比如填 112 表示 2ulentil
+                        距离；若想得到完全紧贴的理论 dps 可填默认值 0）。
+                    </li>
+                    <li>模式为 "wheel" 时，需在“转速指令值”输入框填写转速指令（比如 0.95；默认值为
+                        1），以及在“攻击范围角”输入框填写攻击范围角（默认值为 138°）。
+                    </li>
                 </ul>
             </div>
         </details>
@@ -635,8 +712,12 @@
                 <p>4. 花瓣名的特殊情况：</p>
                 <ul>
                     <li>(1) 缩写：ant egg -> agg；beetle egg -> bgg；golden leaf -> gl。</li>
-                    <li>(2) 不含 (1) 的情况中，图标显示花瓣名与真实花瓣名不同时，采用图标显示花瓣名，如 cogwheel 应写为 cog。</li>
-                    <li>(3) (2) 的情况中，若多个花瓣图标显示花瓣名重复，则将真实花瓣名中的形容词加上 () 括号提到图标花瓣名之后，如 magic leaf 应写为 leaf(magic)。</li>
+                    <li>(2) 不含 (1) 的情况中，图标显示花瓣名与真实花瓣名不同时，采用图标显示花瓣名，如 cogwheel 应写为
+                        cog。
+                    </li>
+                    <li>(3) (2) 的情况中，若多个花瓣图标显示花瓣名重复，则将真实花瓣名中的形容词加上 () 括号提到图标花瓣名之后，如
+                        magic leaf 应写为 leaf(magic)。
+                    </li>
                     <li>(4) 如果同一花瓣不同情况下有不同 dps，则在花瓣名后加上 _+数字 加以区分，不加则为默认，具体如下：
                         <ul>
                             <li>bean_0：周围有人；1：周围没人；默认为 0</li>
@@ -656,18 +737,22 @@
                     </li>
                 </ul>
                 <p>5. 如果花瓣不计入 dps（bur、dl、gl 等）但仍发挥其效果，在后面加上单个下划线 _ （例：ugl_）。</p>
-                <p>6. <strong>注意</strong>：<code>bur</code>、<code>clover</code> 的增益不可叠加，<code>privet</code> 现在只需输入 <code>privet</code>，不再支持后缀区分。</p>
+                <p>6. <strong>注意</strong>：<code>bur</code>、<code>clover</code> 的增益不可叠加，<code>privet</code>
+                    现在只需输入 <code>privet</code>，不再支持后缀区分。</p>
             </div>
         </details>
 
         <details>
             <summary>天赋输入规范</summary>
             <div class="details-content">
-                <p>1. 天赋顺序分别为：ph(petal health)、reload、summon、luck、poison、cpoison(concentrated poison)、dup(duplicator)、rot(rotation speed)、reach、health/sc(second chance)。</p>
-                <p>2. ph 至 luck、dup 至 reach 天赋：用等级表示，不点为 -，Common 为 C，以此类推，其中 Unusual-Un，Ultra-U，Epic-E，Eternal-Et。</p>
+                <p>1. 天赋顺序分别为：ph(petal health)、reload、summon、luck、poison、cpoison(concentrated
+                    poison)、dup(duplicator)、rot(rotation speed)、reach、health/sc(second chance)。</p>
+                <p>2. ph 至 luck、dup 至 reach 天赋：用等级表示，不点为 -，Common 为 C，以此类推，其中
+                    Unusual-Un，Ultra-U，Epic-E，Eternal-Et。</p>
                 <p>3. poison 天赋：用层数表示，不点为 -，点一层为 1，点满为 9。</p>
                 <p>4. cpoison 天赋：不点为 -，点为 1。</p>
-                <p>5. health/sc 天赋：用等级表示，Common Health 为 C（Un、R 同理），Rare Health+Legendary Second Chance 为 L（M 同理）。</p>
+                <p>5. health/sc 天赋：用等级表示，Common Health 为 C（Un、R 同理），Rare Health+Legendary Second Chance 为 L（M
+                    同理）。</p>
             </div>
         </details>
 
@@ -1079,6 +1164,7 @@
             document.getElementById('angle').value = '138°';
         }
     }
+
 
 </script>
 </body>
