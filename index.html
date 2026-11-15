@@ -38,7 +38,7 @@
 
         .container {
             width: 100%;
-            max-width: 1400px;
+            max-width: 1600px;
         }
 
         .header {
@@ -81,7 +81,7 @@
 
         .talent-grid {
             display: grid;
-            grid-template-columns: repeat(13, minmax(70px, 1fr));
+            grid-template-columns: repeat(13, minmax(85px, 1fr));
             gap: 10px;
             margin-bottom: 24px;
         }
@@ -132,6 +132,7 @@
             font-weight: 500;
             cursor: default;
             background-color: rgba(31, 33, 40, 0.6);
+            font-size: 13px; /* 稍微减小字号以防极端情况溢出 */
         }
 
         .number-input-container {
@@ -449,7 +450,6 @@
             }
         }
 
-
     </style>
 </head>
 <body>
@@ -464,9 +464,7 @@
         <h2>更新日志</h2>
         <h3>v2.3.0 (2026.11.15)</h3>
         <ul>
-            <li>新增 medic 天赋和 ante 天赋（目前仅用于计算TP），调整天赋顺序为
-                ph、reload、summon、luck、poison、cpoison、dup、rot、health/sc、medic、ante、reach
-            </li>
+            <li>新增 medic 天赋和 ante 天赋（目前仅用于计算TP），调整天赋顺序为 ph、reload、summon、luck、poison、cpoison、dup、rot、health/sc、medic、ante、reach</li>
             <li>修复其它已知 bug</li>
         </ul>
         <h3>v2.2.0 (2026.11.14)</h3>
@@ -738,8 +736,7 @@
                         1），以及在“攻击范围角”输入框填写攻击范围角（默认值为 138°）。
                     </li>
                 </ul>
-                <p>4. “生物”输入框支持快捷输入生物名称（如
-                    uscorpion），系统将自动填充对应的体伤与护甲，手动修改体伤或护甲会自动清空该框。</p>
+                <p>4. “生物”输入框支持快捷输入生物名称（如 uscorpion），系统将自动填充对应的体伤与护甲，手动修改体伤或护甲会自动清空该框。</p>
             </div>
         </details>
 
@@ -849,7 +846,7 @@
         { x: 10935, y: 583.2, names: ["ugambler"] },
         { x: 21870, y: 7873.2, names: ["uleafbug", "ugolden_leafbug"] },
         { x: 6561, y: 583.2, names: ["ant_egg", "sant_egg", "fire_ant_egg", "sfire_ant_egg", "garbage", "sgarbage", "termite_egg", "stermite_egg", "tomb", "stomb"] },
-        { x: 8748, y: 583.2, names: ["barrel", "sbarrel"] },
+        { x: 8748, y: 583.2, names: ["barrel", "sbarrel"] }, 
         { x: 10935, y: 583.2, names: ["bubble", "sbubble", "firefly", "sfirefly", "magic_firefly", "smagic_firefly", "worm_guts", "sworm_guts"] },
         { x: 21870, y: 583.2, names: ["target_dummy", "starget_dummy", "baby_ant", "sbaby_ant", "baby_termite", "sbaby_termite", "bush", "sbush", "centipede", "scentipede", "desert_centipede", "sdesert_centipede", "evil_centipede", "sevil_centipede", "fly", "sfly", "ghost", "sghost", "moth", "smoth", "queen_ant", "squeen_ant", "rock", "srock", "ladybug", "sladybug", "dark_ladybug", "sdark_ladybug", "shiny_ladybug", "sshiny_ladybug", "leech", "sleech", "shell", "sshell", "soldier_ant", "ssoldier_ant", "soldier_termite", "ssoldier_termite", "sponge", "ssponge", "square", "ssquare", "termite_overmind", "stermite_overmind", "worker_ant", "sworker_ant", "worket_termite", "sworket_termite"] },
         { x: 32805, y: 583.2, names: ["ant_hole", "sant_hole", "dandelion", "sdandelion", "scorpion", "sscorpion", "hel_spider", "shel_spider", "spider", "sspider"] },
@@ -1281,7 +1278,6 @@
             document.getElementById('angle').value = '138°';
         }
     }
-
 
 
 </script>
