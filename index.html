@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPS Build Analyzer v2.2.0</title>
+    <title>DPS Build Analyzer v2.3.0</title>
     <!-- 使用本地准备好的 favicon.png -->
     <link rel="icon" type="image/png" href="favicon.png">
 
@@ -81,7 +81,7 @@
 
         .talent-grid {
             display: grid;
-            grid-template-columns: repeat(11, 1fr);
+            grid-template-columns: repeat(13, minmax(70px, 1fr));
             gap: 10px;
             margin-bottom: 24px;
         }
@@ -434,12 +434,12 @@
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
             .talent-grid {
-                grid-template-columns: repeat(6, 1fr);
+                grid-template-columns: repeat(7, 1fr);
             }
         }
         @media (max-width: 600px) {
             .talent-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
             .changelog-btn {
                 top: 10px;
@@ -462,6 +462,13 @@
     <div class="modal-content">
         <span class="close-btn" onclick="toggleModal()">&times;</span>
         <h2>更新日志</h2>
+        <h3>v2.3.0 (2026.11.15)</h3>
+        <ul>
+            <li>新增 medic 天赋和 ante 天赋（目前仅用于计算TP），调整天赋顺序为
+                ph、reload、summon、luck、poison、cpoison、dup、rot、health/sc、medic、ante、reach
+            </li>
+            <li>修复其它已知 bug</li>
+        </ul>
         <h3>v2.2.0 (2026.11.14)</h3>
         <ul>
             <li>新增“生物”输入框，输入生物名称可自动填充对应体伤与护甲</li>
@@ -493,6 +500,7 @@
             <li>新增了实时 TP 计算和等级显示</li>
             <li>新增了攻击范围角（Angle）计算</li>
             <li>重构了界面，支持响应式布局</li>
+            <li>修复已知问题</li>
         </ul>
         <h3>v1.0.0 (2026.10.24)</h3>
         <ul>
@@ -504,7 +512,7 @@
 
 <div class="container">
     <div class="header">
-        <h1>DPS Build Analyzer v2.2.0</h1>
+        <h1>DPS Build Analyzer v2.3.0</h1>
         <p>花瓣 / 天赋 / 生物体伤 / 生物护甲 → 各花瓣 DPS 与总 DPS</p>
     </div>
 
@@ -639,7 +647,7 @@
             </select></div>
             <div class="form-group"><label>cpoison</label><select id="t-cpoison" onchange="updateTP()">
                 <option value="-">-</option>
-                <option value="1">1</option>
+                <option value="S">S</option>
             </select></div>
             <div class="form-group"><label>dup</label><select id="t-dup" onchange="updateTP()">
                 <option value="-">-</option>
@@ -656,12 +664,6 @@
                 <option value="E">E</option>
                 <option value="L">L</option>
             </select></div>
-            <div class="form-group"><label>reach</label><select id="t-reach" onchange="updateTP()">
-                <option value="-">-</option>
-                <option value="R">R</option>
-                <option value="M">M</option>
-                <option value="S">S</option>
-            </select></div>
             <div class="form-group"><label>health</label><select id="t-health" onchange="updateTP()">
                 <option value="-">-</option>
                 <option value="C">C</option>
@@ -669,6 +671,30 @@
                 <option value="R">R</option>
                 <option value="L">L</option>
                 <option value="M">M</option>
+            </select></div>
+            <div class="form-group"><label>medic</label><select id="t-medic" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="C">C</option>
+                <option value="Un">Un</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="U">U</option>
+                <option value="S">S</option>
+                <option value="Et">Et</option>
+            </select></div>
+            <div class="form-group"><label>ante</label><select id="t-ante" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="R">R</option>
+                <option value="E">E</option>
+                <option value="L">L</option>
+            </select></div>
+            <div class="form-group"><label>reach</label><select id="t-reach" onchange="updateTP()">
+                <option value="-">-</option>
+                <option value="R">R</option>
+                <option value="M">M</option>
+                <option value="S">S</option>
             </select></div>
 
             <div class="form-group">
@@ -760,18 +786,18 @@
             <summary>天赋输入规范</summary>
             <div class="details-content">
                 <p>1. 天赋顺序分别为：ph(petal health)、reload、summon、luck、poison、cpoison(concentrated
-                    poison)、dup(duplicator)、rot(rotation speed)、reach、health/sc(second chance)。</p>
-                <p>2. ph 至 luck、dup 至 reach 天赋：用等级表示，不点为 -，Common 为 C，以此类推，其中
+                    poison)、dup(duplicator)、rot(rotation speed)、health/sc(second chance)、medic、ante(antennae)、reach。</p>
+                <p>2. ph 至 luck、dup 至 rot、ante 至 reach 天赋：用等级表示，不点为 -，Common 为 C，以此类推，其中
                     Unusual-Un，Ultra-U，Epic-E，Eternal-Et。</p>
                 <p>3. poison 天赋：用层数表示，不点为 -，点一层为 1，点满为 9。</p>
-                <p>4. cpoison 天赋：不点为 -，点为 1。</p>
+                <p>4. cpoison 天赋：不点为 -，点为 S。</p>
                 <p>5. health/sc 天赋：用等级表示，Common Health 为 C（Un、R 同理），Rare Health+Legendary Second Chance 为 L（M
                     同理）。</p>
             </div>
         </details>
 
         <div class="author-info">
-            <p>版本：v2.2.0 | 更新于 2026.11.14</p>
+            <p>版本：v2.3.0 | 更新于 2026.11.15</p>
             <p>原作者：Hu0_gu0_4u31（florr：Huo_guo_tu31）</p>
         </div>
     </div>
@@ -1024,11 +1050,13 @@
         summon: {"-": 0, "C": 2, "Un": 7, "R": 15, "E": 26, "L": 40, "M": 57, "U": 77, "S": 100, "Et": 126},
         luck: {"-": 0, "C": 2, "Un": 5, "R": 9, "E": 14, "L": 20, "M": 27, "U": 35, "S": 44, "Et": 54},
         poison: {"-": 0, "1": 1, "2": 3, "3": 6, "4": 9, "5": 12, "6": 15, "7": 18, "8": 21, "9": 24},
-        cpoison: {"-": 0, "1": 15},
+        cpoison: {"-": 0, "S": 15},
         dup: {"-": 0, "L": 10, "U": 30, "S": 60, "Et": 100},
         rot: {"-": 0, "C": 1, "Un": 3, "R": 6, "E": 10, "L": 15},
-        reach: {"-": 0, "R": 3, "M": 9, "S": 18},
-        health: {"-": 0, "C": 2, "Un": 7, "R": 15, "L": 25, "M": 45}
+        health: {"-": 0, "C": 2, "Un": 7, "R": 15, "L": 25, "M": 45},
+        medic: {"-": 0, "C": 2, "Un": 7, "R": 15, "E": 26, "L": 40, "M": 57, "U": 77, "S": 100, "Et": 126},
+        ante: {"-": 0, "R": 1, "E": 4, "L": 9},
+        reach: {"-": 0, "R": 3, "M": 9, "S": 18}
     };
 
     function calcLevel(tp) {
@@ -1054,8 +1082,10 @@
         totalTp += TP_DATA.cpoison[document.getElementById('t-cpoison').value];
         totalTp += TP_DATA.dup[document.getElementById('t-dup').value];
         totalTp += TP_DATA.rot[document.getElementById('t-rot').value];
-        totalTp += TP_DATA.reach[document.getElementById('t-reach').value];
         totalTp += TP_DATA.health[document.getElementById('t-health').value];
+        totalTp += TP_DATA.medic[document.getElementById('t-medic').value];
+        totalTp += TP_DATA.ante[document.getElementById('t-ante').value];
+        totalTp += TP_DATA.reach[document.getElementById('t-reach').value];
 
         const lvl = calcLevel(totalTp);
         document.getElementById('tp-display').value = `${totalTp}TP/lv${lvl}`;
@@ -1121,8 +1151,10 @@
                     document.getElementById('t-cpoison').value,
                     document.getElementById('t-dup').value,
                     document.getElementById('t-rot').value,
-                    document.getElementById('t-reach').value,
-                    document.getElementById('t-health').value
+                    document.getElementById('t-health').value,
+                    document.getElementById('t-medic').value,
+                    document.getElementById('t-ante').value,
+                    document.getElementById('t-reach').value
                 ];
                 const talent = tValues.join(' ');
 
@@ -1175,7 +1207,7 @@
         container.innerHTML = html;
     }
 
-    function setTalents(ph, reload, summon, luck, poison, cpoison, dup, rot, reach, health) {
+    function setTalents(ph, reload, summon, luck, poison, cpoison, dup, rot, health, medic, ante, reach) {
         document.getElementById('t-ph').value = ph;
         document.getElementById('t-reload').value = reload;
         document.getElementById('t-summon').value = summon;
@@ -1184,8 +1216,10 @@
         document.getElementById('t-cpoison').value = cpoison;
         document.getElementById('t-dup').value = dup;
         document.getElementById('t-rot').value = rot;
-        document.getElementById('t-reach').value = reach;
         document.getElementById('t-health').value = health;
+        document.getElementById('t-medic').value = medic;
+        document.getElementById('t-ante').value = ante;
+        document.getElementById('t-reach').value = reach;
         updateTP();
     }
 
@@ -1207,36 +1241,36 @@
         if (type === 'double Et claw') {
             buildInput.value = '3claw 4ugl_';
             modeSelect.value = 'yy';
-            setTalents('Et', 'Et', '-', '-', '-', '-', '-', '-', 'M', 'Un');
+            setTalents('Et', 'Et', '-', '-', '-', '-', '-', '-', 'Un', '-', '-', 'M');
         } else if (type === 'dup sawblade') {
             buildInput.value = 'sawblade 6ugl_';
             modeSelect.value = 'yy';
-            setTalents('M', 'Et', '-', '-', '-', '-', 'S', '-', 'R', 'C');
+            setTalents('M', 'Et', '-', '-', '-', '-', 'S', '-', 'C', '-', '-', 'R');
         } else if (type === 'chip yy') {
             buildInput.value = '2chip bur_ 6ugl_';
             modeSelect.value = 'yy';
-            setTalents('-', 'Et', '-', '-', '-', '-', 'S', '-', 'R', 'M');
+            setTalents('-', 'Et', '-', '-', '-', '-', 'S', '-', 'M', '-', '-', 'R');
         } else if (type === 'dust lentil 1') {
             buildInput.value = '2ugl 4dust bur 2ulentil';
             modeSelect.value = 'lentil';
-            setTalents('-', 'Et', '-', '-', '-', '-', 'S', '-', 'R', 'M');
+            setTalents('-', 'Et', '-', '-', '-', '-', 'S', '-', 'M', '-', '-', 'R');
             lentildisInput.value = 0;
         } else if (type === 'dust lentil 2') {
             buildInput.value = '2ugl 4dust bur 2ulentil';
             modeSelect.value = 'lentil';
-            setTalents('-', 'Et', '-', '-', '-', '-', 'S', '-', 'R', 'M');
+            setTalents('-', 'Et', '-', '-', '-', '-', 'S', '-', 'M', '-', '-', 'R');
             lentildisInput.value = 112;
         } else if (type === 'triangle wheel') {
             buildInput.value = 'faster 9triangle';
             modeSelect.value = 'wheel';
-            setTalents('Et', 'U', '-', '-', '-', '-', '-', 'L', 'S', 'M');
+            setTalents('Et', 'U', '-', '-', '-', '-', '-', 'L', 'M', '-', '-', 'S');
             xInput.value = 7290;
             rotspeedInput.value = 1;
             document.getElementById('angle').value = '138°';
         } else if (type === '2.5s wheel') {
             buildInput.value = 'faster sawblade sawblade bean_1 bone corn leaf rock';
             modeSelect.value = 'wheel';
-            setTalents('Et', 'U', '-', '-', '-', '-', '-', 'L', 'S', 'M');
+            setTalents('Et', 'U', '-', '-', '-', '-', '-', 'L', 'M', '-', '-', 'S');
             xInput.value = 7290;
             rotspeedInput.value = 1;
             document.getElementById('angle').value = '138°';
