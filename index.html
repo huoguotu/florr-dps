@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPS Build Analyzer v2.3.0</title>
+    <title>DPS Build Analyzer v2.4.0</title>
     <!-- 使用本地准备好的 favicon.png -->
     <link rel="icon" type="image/png" href="favicon.png">
 
@@ -132,7 +132,7 @@
             font-weight: 500;
             cursor: default;
             background-color: rgba(31, 33, 40, 0.6);
-            font-size: 13px; /* 稍微减小字号以防极端情况溢出 */
+            font-size: 13px;
         }
 
         .number-input-container {
@@ -462,6 +462,12 @@
     <div class="modal-content">
         <span class="close-btn" onclick="toggleModal()">&times;</span>
         <h2>更新日志</h2>
+        <h3>v2.4.0 (2026.11.15)</h3>
+        <ul>
+            <li>优化 battery 和 lightning 的计算方式，现支持通过 `_+数字` 后缀自定义攻击对象数</li>
+            <li>修复 cpoison 选择 S 时显示 NaN 的问题</li>
+            <li>修复其它已知 bug</li>
+        </ul>
         <h3>v2.3.0 (2026.11.15)</h3>
         <ul>
             <li>新增 medic 天赋和 ante 天赋（目前仅用于计算TP），调整天赋顺序为 ph、reload、summon、luck、poison、cpoison、dup、rot、health/sc、medic、ante、reach</li>
@@ -510,7 +516,7 @@
 
 <div class="container">
     <div class="header">
-        <h1>DPS Build Analyzer v2.3.0</h1>
+        <h1>DPS Build Analyzer v2.4.0</h1>
         <p>花瓣 / 天赋 / 生物体伤 / 生物护甲 → 各花瓣 DPS 与总 DPS</p>
     </div>
 
@@ -736,7 +742,7 @@
                         1），以及在“攻击范围角”输入框填写攻击范围角（默认值为 138°）。
                     </li>
                 </ul>
-                <p>4. “生物”输入框支持快捷输入生物名称（如 uscorpion），系统将自动填充对应的体伤与护甲，手动修改体伤或护甲会自动清空该框。</p>
+                <p>4. “生物”输入框支持快捷输入生物名称，系统将自动填充对应的体伤与护甲，手动修改体伤或护甲会自动清空该框。</p>
             </div>
         </details>
 
@@ -757,6 +763,7 @@
                     </li>
                     <li>(4) 如果同一花瓣不同情况下有不同 dps，则在花瓣名后加上 _+数字 加以区分，不加则为默认，具体如下：
                         <ul>
+                            <li>battery / lightning：可通过 _+数字 后缀指定攻击对象数，如不加后缀则默认为最大攻击对象数。</li>
                             <li>bean_0：周围有人；1：周围没人；默认为 0</li>
                             <li>broccoli_0：中0发；1~3：以此类推；默认为 0</li>
                             <li>carrot_0：不发射（伤害-80%）；1：发射（额外时间0.5s）；默认为 1</li>
@@ -794,7 +801,7 @@
         </details>
 
         <div class="author-info">
-            <p>版本：v2.3.0 | 更新于 2026.11.15</p>
+            <p>版本：v2.4.0 | 更新于 2026.11.15</p>
             <p>原作者：Hu0_gu0_4u31（florr：Huo_guo_tu31）</p>
         </div>
     </div>
