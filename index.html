@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPS Build Analyzer v2.4.1</title>
+    <title>DPS Build Analyzer v2.5.0</title>
     <!-- 使用本地准备好的 favicon.png -->
     <link rel="icon" type="image/png" href="favicon.png">
 
@@ -464,30 +464,35 @@
     <div class="modal-content">
         <span class="close-btn" onclick="toggleModal()">&times;</span>
         <h2>更新日志</h2>
+        <h3>v2.5.0 (2026.11.16)</h3>
+        <ul>
+            <li>全面支持 m 花瓣</li>
+            <li>新增 m 生物的基础体伤与护甲数据，支持快捷输入</li>
+            <li>新增 square 花瓣</li>
+            <li>修复已知问题</li>
+        </ul>
         <h3>v2.4.1 (2026.11.15)</h3>
         <ul>
             <li>修复了总伤害没有计算基础毒伤的 bug</li>
-            <li>优化“生物”输入框的提示示例，并新增一个包含毒伤计算的示例按钮</li>
-            <li>修复其它已知 bug</li>
+            <li>优化“生物”输入框的提示示例，并新增毒伤计算示例</li>
+            <li>修复已知问题</li>
         </ul>
         <h3>v2.4.0 (2026.11.15)</h3>
         <ul>
             <li>优化 battery 和 lightning 的计算方式，现支持通过 <code>_+数字</code> 后缀自定义攻击对象数</li>
             <li>修复 cpoison 选择 S 时显示 NaN 的问题</li>
-            <li>修复其它已知 bug</li>
+            <li>修复已知问题</li>
         </ul>
         <h3>v2.3.0 (2026.11.15)</h3>
         <ul>
-            <li>新增 medic 天赋和 ante 天赋（目前仅用于计算TP），调整天赋顺序为
-                ph、reload、summon、luck、poison、cpoison、dup、rot、health/sc、medic、ante、reach
-            </li>
-            <li>修复其它已知 bug</li>
+            <li>新增 medic 天赋和 ante 天赋（目前仅用于计算TP），调整天赋顺序</li>
+            <li>修复已知问题</li>
         </ul>
         <h3>v2.2.0 (2026.11.14)</h3>
         <ul>
             <li>新增“生物”输入框，输入生物名称可自动填充对应体伤与护甲</li>
-            <li>生物体伤新增档位 2916、8748、25515、29160，优化上下微调体验</li>
-            <li>修复其它已知 bug</li>
+            <li>生物体伤新增四个档位，优化上下微调体验</li>
+            <li>修复已知问题</li>
         </ul>
         <h3>v2.1.0 (2026.11.14)</h3>
         <ul>
@@ -496,7 +501,7 @@
             <li>修改毒伤计算方式，现不可叠加，在输出最后会显示总毒伤</li>
             <li>修改 privet 输入方式，现在只需输入 privet，不再支持 privet_xx 后缀</li>
             <li>移除输出表格上方的 TP Cost（已在天赋界面显示）</li>
-            <li>修复其它已知 bug</li>
+            <li>修复已知问题</li>
         </ul>
         <h3>v2.0.2 (2026.11.13)</h3>
         <ul>
@@ -518,7 +523,7 @@
         </ul>
         <h3>v1.0.0 (2026.10.24)</h3>
         <ul>
-            <li>初始 Python 终端版本发布（原作者 Hu0_gu0_4u31）</li>
+            <li>初始Python终端版本发布</li>
             <li>初始网页版本发布于 caspinxie.github.io，作者 13579al（经原作者授权）</li>
         </ul>
     </div>
@@ -526,7 +531,7 @@
 
 <div class="container">
     <div class="header">
-        <h1>DPS Build Analyzer v2.4.1</h1>
+        <h1>DPS Build Analyzer v2.5.0</h1>
         <p>花瓣 / 天赋 / 生物体伤 / 生物护甲 → 各花瓣 DPS 与总 DPS</p>
     </div>
 
@@ -763,7 +768,7 @@
             <div class="details-content">
                 <p>1. 各花瓣名用空格隔开，s 可以不标等级，其它要标等级（例：usawblade、pearl、qcoin）。</p>
                 <p>2. 花瓣前可加数字表示多个同一花瓣（例：2bone、3claw）。</p>
-                <p>3. 目前支持的花瓣：所有 u/s/q 等级的一帧十判花瓣（部分魔法花瓣除外）、部分非一帧十判花瓣。</p>
+                <p>3. 目前支持的花瓣：所有 m/u/s/q 等级的一帧十判花瓣（部分魔法花瓣除外）、部分非一帧十判花瓣。</p>
                 <p>4. 花瓣名的特殊情况：</p>
                 <ul>
                     <li>(1) 缩写：ant egg -> agg；beetle egg -> bgg；golden leaf -> gl。</li>
@@ -815,7 +820,7 @@
         </details>
 
         <div class="author-info">
-            <p>版本：v2.4.1 | 更新于 2026.11.15</p>
+            <p>版本：v2.5.0 | 更新于 2026.11.16</p>
             <p>原作者：Hu0_gu0_4u31（florr：Huo_guo_tu31）</p>
         </div>
     </div>
@@ -849,6 +854,24 @@
 
     // 生物数据字典
     const MOB_GROUPS = [
+        { x: 729, y: 194.4, names: ["mant_egg", "mfire_ant_egg", "mgarbage", "mtermite_egg", "mtomb"] },
+        { x: 972, y: 194.4, names: ["mbarrel"] },
+        { x: 1215, y: 194.4, names: ["mbubble", "mfirefly", "mmagic_firefly", "mworm_guts"] },
+        { x: 2430, y: 194.4, names: ["mtarget_dummy", "mbaby_ant", "mbaby_termite", "mbush", "mcentipede", "mdesert_centipede", "mevil_centipede", "mfly", "mghost", "mmoth", "mqueen_ant", "mrock", "mladybug", "mdark_ladybug", "mshiny_ladybug", "mleech", "mshell", "msoldier_ant", "msoldier_termite", "msponge", "msquare", "mtermite_overmind", "mworker_ant", "mworket_termite"] },
+        { x: 3645, y: 194.4, names: ["mant_hole", "mdandelion", "mscorpion", "mhel_spider", "mspider"] },
+        { x: 4860, y: 194.4, names: ["mbaby_fire_ant", "mbumble_bee", "mmantis", "mqueen_fire_ant", "mroach", "msoldier_fire_ant", "mstarfish", "mworker_fire_ant"] },
+        { x: 6075, y: 194.4, names: ["mcrab", "mjellyfish"] },
+        { x: 7290, y: 194.4, names: ["mnazar_beetle", "mbeetle", "mmummy_beetle", "mpharaoh_beetle", "mhel_beetle", "mhel_centipede", "msilverfish", "mworm"] },
+        { x: 8505, y: 194.4, names: ["mcactus"] },
+        { x: 9720, y: 194.4, names: ["msandstorm"] },
+        { x: 12150, y: 194.4, names: ["mbee", "mhornet", "mwasp", "mhel_wasp"] },
+        { x: 3645, y: 680.4, names: ["mmecha_crab"] },
+        { x: 7290, y: 680.4, names: ["mmecha_spider"] },
+        { x: 12150, y: 680.4, names: ["mmecha_wasp"] },
+        { x: 2430, y: 1409.4, names: ["mmecha_flower"] },
+        { x: 3645, y: 194.4, names: ["mgambler"] },
+        { x: 7290, y: 2624.4, names: ["mleafbug", "mgolden_leafbug"] },
+
         { x: 2187, y: 583.2, names: ["uant_egg", "ufire_ant_egg", "ugarbage", "utermite_egg", "utomb"] },
         { x: 2916, y: 583.2, names: ["ubarrel"] },
         { x: 3645, y: 583.2, names: ["ububble", "ufirefly", "umagic_firefly", "uworm_guts"] },
@@ -866,6 +889,7 @@
         { x: 7290, y: 4228.2, names: ["umecha_flower"] },
         { x: 10935, y: 583.2, names: ["ugambler"] },
         { x: 21870, y: 7873.2, names: ["uleafbug", "ugolden_leafbug"] },
+
         { x: 6561, y: 583.2, names: ["ant_egg", "sant_egg", "fire_ant_egg", "sfire_ant_egg", "garbage", "sgarbage", "termite_egg", "stermite_egg", "tomb", "stomb"] },
         { x: 8748, y: 583.2, names: ["barrel", "sbarrel"] },
         { x: 10935, y: 583.2, names: ["bubble", "sbubble", "firefly", "sfirefly", "magic_firefly", "smagic_firefly", "worm_guts", "sworm_guts"] },
@@ -984,7 +1008,6 @@
         const lentildisInput = document.getElementById('lentildis');
         const mobInput = document.getElementById('mob');
 
-        // 监听生物名称输入
         mobInput.addEventListener('input', function() {
             let val = mobInput.value.trim();
             if (MOB_MAP[val]) {
@@ -993,12 +1016,10 @@
             }
         });
 
-        // 如果手动修改体伤，清空生物名称框
         xInput.addEventListener('input', function() {
             mobInput.value = '';
         });
 
-        // 如果手动修改护甲，清空生物名称框
         yInput.addEventListener('input', function() {
             mobInput.value = '';
         });
