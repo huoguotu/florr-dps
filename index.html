@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPS Build Analyzer v2.5.0</title>
+    <title>DPS Build Analyzer v2.6.0</title>
     <!-- 使用本地准备好的 favicon.png -->
     <link rel="icon" type="image/png" href="favicon.png">
 
@@ -98,7 +98,7 @@
             white-space: nowrap;
         }
 
-        .form-group input, .form-group select {
+        .form-group input[type="text"], .form-group input[type="number"], .form-group select {
             background-color: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
@@ -124,6 +124,28 @@
 
         .form-group input:focus, .form-group select:focus {
             border-color: var(--primary);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding-top: 25px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin-right: 8px;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-container span {
+            font-size: 14px;
+            color: var(--text-main);
         }
 
         #tp-display {
@@ -464,6 +486,11 @@
     <div class="modal-content">
         <span class="close-btn" onclick="toggleModal()">&times;</span>
         <h2>更新日志</h2>
+        <h3>v2.6.0 (2026.11.17)</h3>
+        <ul>
+            <li>新增“是否为花类”选项，并新增花类 dps 计算示例</li>
+            <li>修复已知问题</li>
+        </ul>
         <h3>v2.5.0 (2026.11.16)</h3>
         <ul>
             <li>全面支持 m 花瓣</li>
@@ -531,13 +558,13 @@
 
 <div class="container">
     <div class="header">
-        <h1>DPS Build Analyzer v2.5.0</h1>
+        <h1>DPS Build Analyzer v2.6.0</h1>
         <p>花瓣 / 天赋 / 生物体伤 / 生物护甲 → 各花瓣 DPS 与总 DPS</p>
     </div>
 
     <div class="panel">
         <div class="form-grid-1">
-            <div class="form-group" style="grid-column: span 3;">
+            <div class="form-group" style="grid-column: span 2;">
                 <label>花瓣（空格分隔，可加数量前缀）</label>
                 <input type="text" id="build" value="">
             </div>
@@ -566,6 +593,13 @@
                         <button type="button" class="btn-up" onclick="stepY(1)" tabindex="-1">▲</button>
                         <button type="button" class="btn-down" onclick="stepY(-1)" tabindex="-1">▼</button>
                     </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="is_flower">
+                    <span>是否为花类</span>
                 </div>
             </div>
         </div>
@@ -736,6 +770,7 @@
             </button>
             <button class="btn-secondary btn-action" onclick="loadExample('2.5s wheel')">示例 7：2.5s wheel</button>
             <button class="btn-secondary btn-action" onclick="loadExample('poison')">示例 8：poison</button>
+            <button class="btn-secondary btn-action" onclick="loadExample('claw gambler')">示例 9：claw gambler</button>
         </div>
     </div>
 
@@ -745,10 +780,11 @@
         <details open>
             <summary>用法</summary>
             <div class="details-content">
-                <p>1. 在上方输入花瓣构筑、通过下拉框配置天赋、填写生物体伤与生物护甲、选择模式，点击“计算 DPS”即可在下方表格输出各花瓣
+                <p>1. 在上方输入花瓣构筑、通过下拉框配置天赋、填写生物体伤、生物护甲、是否为花类，选择模式，点击“计算
+                    DPS”即可在下方表格输出各花瓣
                     DPS 以及总 DPS。</p>
                 <p>2. 右侧的“TP cost/lvl req”显示框会实时计算并展示当前所选天赋的 TP 消耗及对应等级。</p>
-                <p>3. 花瓣、天赋、生物体伤、生物护甲为必填项；模式可通过下拉框选择 "lentil"、"yy" 或 "wheel"，默认为
+                <p>3. 花瓣、天赋、生物体伤、生物护甲、是否为花类为必填项；模式可通过下拉框选择 "lentil"、"yy" 或 "wheel"，默认为
                     "lentil"。</p>
                 <ul>
                     <li>模式为 "lentil" 或 "yy" 时，需在“lentil 距离”输入框填写数值（比如填 112 表示 2ulentil
@@ -759,7 +795,7 @@
                     </li>
                 </ul>
                 <p>4.
-                    “生物”输入框支持快捷输入生物名称，系统将自动填充对应的体伤与护甲，手动修改体伤或护甲会自动清空该框。</p>
+                    “生物”输入框支持快捷输入生物名称，系统将自动填充对应的体伤、护甲以及是否为花类，手动修改体伤或护甲会自动清空该框。</p>
             </div>
         </details>
 
@@ -820,7 +856,7 @@
         </details>
 
         <div class="author-info">
-            <p>版本：v2.5.0 | 更新于 2026.11.16</p>
+            <p>版本：v2.6.0 | 更新于 2026.11.17</p>
             <p>原作者：Hu0_gu0_4u31（florr：Huo_guo_tu31）</p>
         </div>
     </div>
@@ -852,67 +888,67 @@
     // 最大为 180°
     const ANGLE_TIERS = [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 138, 150, 165, 180];
 
-    // 生物数据字典
+    // 生物数据字典（加入 z 字段表示是否为花类，1为花类，0为非花类）
     const MOB_GROUPS = [
-        { x: 729, y: 194.4, names: ["mant_egg", "mfire_ant_egg", "mgarbage", "mtermite_egg", "mtomb"] },
-        { x: 972, y: 194.4, names: ["mbarrel"] },
-        { x: 1215, y: 194.4, names: ["mbubble", "mfirefly", "mmagic_firefly", "mworm_guts"] },
-        { x: 2430, y: 194.4, names: ["mtarget_dummy", "mbaby_ant", "mbaby_termite", "mbush", "mcentipede", "mdesert_centipede", "mevil_centipede", "mfly", "mghost", "mmoth", "mqueen_ant", "mrock", "mladybug", "mdark_ladybug", "mshiny_ladybug", "mleech", "mshell", "msoldier_ant", "msoldier_termite", "msponge", "msquare", "mtermite_overmind", "mworker_ant", "mworket_termite"] },
-        { x: 3645, y: 194.4, names: ["mant_hole", "mdandelion", "mscorpion", "mhel_spider", "mspider"] },
-        { x: 4860, y: 194.4, names: ["mbaby_fire_ant", "mbumble_bee", "mmantis", "mqueen_fire_ant", "mroach", "msoldier_fire_ant", "mstarfish", "mworker_fire_ant"] },
-        { x: 6075, y: 194.4, names: ["mcrab", "mjellyfish"] },
-        { x: 7290, y: 194.4, names: ["mnazar_beetle", "mbeetle", "mmummy_beetle", "mpharaoh_beetle", "mhel_beetle", "mhel_centipede", "msilverfish", "mworm"] },
-        { x: 8505, y: 194.4, names: ["mcactus"] },
-        { x: 9720, y: 194.4, names: ["msandstorm"] },
-        { x: 12150, y: 194.4, names: ["mbee", "mhornet", "mwasp", "mhel_wasp"] },
-        { x: 3645, y: 680.4, names: ["mmecha_crab"] },
-        { x: 7290, y: 680.4, names: ["mmecha_spider"] },
-        { x: 12150, y: 680.4, names: ["mmecha_wasp"] },
-        { x: 2430, y: 1409.4, names: ["mmecha_flower"] },
-        { x: 3645, y: 194.4, names: ["mgambler"] },
-        { x: 7290, y: 2624.4, names: ["mleafbug", "mgolden_leafbug"] },
+        { x: 729, y: 194.4, z: 0, names: ["mant_egg", "mfire_ant_egg", "mgarbage", "mtermite_egg", "mtomb"] },
+        { x: 972, y: 194.4, z: 0, names: ["mbarrel"] },
+        { x: 1215, y: 194.4, z: 0, names: ["mbubble", "mfirefly", "mmagic_firefly", "mworm_guts"] },
+        { x: 2430, y: 194.4, z: 0, names: ["mtarget_dummy", "mbaby_ant", "mbaby_termite", "mbush", "mcentipede", "mdesert_centipede", "mevil_centipede", "mfly", "mghost", "mmoth", "mqueen_ant", "mrock", "mladybug", "mdark_ladybug", "mshiny_ladybug", "mleech", "mshell", "msoldier_ant", "msoldier_termite", "msponge", "msquare", "mtermite_overmind", "mworker_ant", "mworket_termite"] },
+        { x: 3645, y: 194.4, z: 0, names: ["mant_hole", "mdandelion", "mscorpion", "mhel_spider", "mspider"] },
+        { x: 4860, y: 194.4, z: 0, names: ["mbaby_fire_ant", "mbumble_bee", "mmantis", "mqueen_fire_ant", "mroach", "msoldier_fire_ant", "mstarfish", "mworker_fire_ant"] },
+        { x: 6075, y: 194.4, z: 0, names: ["mcrab", "mjellyfish"] },
+        { x: 7290, y: 194.4, z: 0, names: ["mnazar_beetle", "mbeetle", "mmummy_beetle", "mpharaoh_beetle", "mhel_beetle", "mhel_centipede", "msilverfish", "mworm"] },
+        { x: 8505, y: 194.4, z: 0, names: ["mcactus"] },
+        { x: 9720, y: 194.4, z: 0, names: ["msandstorm"] },
+        { x: 12150, y: 194.4, z: 0, names: ["mbee", "mhornet", "mwasp", "mhel_wasp"] },
+        { x: 3645, y: 680.4, z: 0, names: ["mmecha_crab"] },
+        { x: 7290, y: 680.4, z: 0, names: ["mmecha_spider"] },
+        { x: 12150, y: 680.4, z: 0, names: ["mmecha_wasp"] },
+        { x: 2430, y: 1409.4, z: 1, names: ["mmecha_flower"] },
+        { x: 3645, y: 194.4, z: 1, names: ["mgambler"] },
+        { x: 7290, y: 2624.4, z: 0, names: ["mleafbug", "mgolden_leafbug"] },
 
-        { x: 2187, y: 583.2, names: ["uant_egg", "ufire_ant_egg", "ugarbage", "utermite_egg", "utomb"] },
-        { x: 2916, y: 583.2, names: ["ubarrel"] },
-        { x: 3645, y: 583.2, names: ["ububble", "ufirefly", "umagic_firefly", "uworm_guts"] },
-        { x: 7290, y: 583.2, names: ["utarget_dummy", "ubaby_ant", "ubaby_termite", "ubush", "ucentipede", "udesert_centipede", "uevil_centipede", "ufly", "ughost", "umoth", "uqueen_ant", "urock", "uladybug", "udark_ladybug", "ushiny_ladybug", "uleech", "ushell", "usoldier_ant", "usoldier_termite", "usponge", "usquare", "utermite_overmind", "uworker_ant", "uworket_termite"] },
-        { x: 10935, y: 583.2, names: ["uant_hole", "udandelion", "uscorpion", "uhel_spider", "uspider"] },
-        { x: 14580, y: 583.2, names: ["ubaby_fire_ant", "ubumble_bee", "umantis", "uqueen_fire_ant", "uroach", "usoldier_fire_ant", "ustarfish", "uworker_fire_ant"] },
-        { x: 18225, y: 583.2, names: ["ucrab", "ujellyfish"] },
-        { x: 21870, y: 583.2, names: ["unazar_beetle", "ubeetle", "umummy_beetle", "upharaoh_beetle", "uhel_beetle", "uhel_centipede", "usilverfish", "uworm"] },
-        { x: 25515, y: 583.2, names: ["ucactus"] },
-        { x: 29160, y: 583.2, names: ["usandstorm"] },
-        { x: 36450, y: 583.2, names: ["ubee", "uhornet", "uwasp", "uhel_wasp"] },
-        { x: 10935, y: 2041.2, names: ["umecha_crab"] },
-        { x: 21870, y: 2041.2, names: ["umecha_spider"] },
-        { x: 36450, y: 2041.2, names: ["umecha_wasp"] },
-        { x: 7290, y: 4228.2, names: ["umecha_flower"] },
-        { x: 10935, y: 583.2, names: ["ugambler"] },
-        { x: 21870, y: 7873.2, names: ["uleafbug", "ugolden_leafbug"] },
+        { x: 2187, y: 583.2, z: 0, names: ["uant_egg", "ufire_ant_egg", "ugarbage", "utermite_egg", "utomb"] },
+        { x: 2916, y: 583.2, z: 0, names: ["ubarrel"] },
+        { x: 3645, y: 583.2, z: 0, names: ["ububble", "ufirefly", "umagic_firefly", "uworm_guts"] },
+        { x: 7290, y: 583.2, z: 0, names: ["utarget_dummy", "ubaby_ant", "ubaby_termite", "ubush", "ucentipede", "udesert_centipede", "uevil_centipede", "ufly", "ughost", "umoth", "uqueen_ant", "urock", "uladybug", "udark_ladybug", "ushiny_ladybug", "uleech", "ushell", "usoldier_ant", "usoldier_termite", "usponge", "usquare", "utermite_overmind", "uworker_ant", "uworket_termite"] },
+        { x: 10935, y: 583.2, z: 0, names: ["uant_hole", "udandelion", "uscorpion", "uhel_spider", "uspider"] },
+        { x: 14580, y: 583.2, z: 0, names: ["ubaby_fire_ant", "ubumble_bee", "umantis", "uqueen_fire_ant", "uroach", "usoldier_fire_ant", "ustarfish", "uworker_fire_ant"] },
+        { x: 18225, y: 583.2, z: 0, names: ["ucrab", "ujellyfish"] },
+        { x: 21870, y: 583.2, z: 0, names: ["unazar_beetle", "ubeetle", "umummy_beetle", "upharaoh_beetle", "uhel_beetle", "uhel_centipede", "usilverfish", "uworm"] },
+        { x: 25515, y: 583.2, z: 0, names: ["ucactus"] },
+        { x: 29160, y: 583.2, z: 0, names: ["usandstorm"] },
+        { x: 36450, y: 583.2, z: 0, names: ["ubee", "uhornet", "uwasp", "uhel_wasp"] },
+        { x: 10935, y: 2041.2, z: 0, names: ["umecha_crab"] },
+        { x: 21870, y: 2041.2, z: 0, names: ["umecha_spider"] },
+        { x: 36450, y: 2041.2, z: 0, names: ["umecha_wasp"] },
+        { x: 7290, y: 4228.2, z: 1, names: ["umecha_flower"] },
+        { x: 10935, y: 583.2, z: 1, names: ["ugambler"] },
+        { x: 21870, y: 7873.2, z: 0, names: ["uleafbug", "ugolden_leafbug"] },
 
-        { x: 6561, y: 583.2, names: ["ant_egg", "sant_egg", "fire_ant_egg", "sfire_ant_egg", "garbage", "sgarbage", "termite_egg", "stermite_egg", "tomb", "stomb"] },
-        { x: 8748, y: 583.2, names: ["barrel", "sbarrel"] },
-        { x: 10935, y: 583.2, names: ["bubble", "sbubble", "firefly", "sfirefly", "magic_firefly", "smagic_firefly", "worm_guts", "sworm_guts"] },
-        { x: 21870, y: 583.2, names: ["target_dummy", "starget_dummy", "baby_ant", "sbaby_ant", "baby_termite", "sbaby_termite", "bush", "sbush", "centipede", "scentipede", "desert_centipede", "sdesert_centipede", "evil_centipede", "sevil_centipede", "fly", "sfly", "ghost", "sghost", "moth", "smoth", "queen_ant", "squeen_ant", "rock", "srock", "ladybug", "sladybug", "dark_ladybug", "sdark_ladybug", "shiny_ladybug", "sshiny_ladybug", "leech", "sleech", "shell", "sshell", "soldier_ant", "ssoldier_ant", "soldier_termite", "ssoldier_termite", "sponge", "ssponge", "square", "ssquare", "termite_overmind", "stermite_overmind", "worker_ant", "sworker_ant", "worket_termite", "sworket_termite"] },
-        { x: 32805, y: 583.2, names: ["ant_hole", "sant_hole", "dandelion", "sdandelion", "scorpion", "sscorpion", "hel_spider", "shel_spider", "spider", "sspider"] },
-        { x: 43740, y: 583.2, names: ["baby_fire_ant", "sbaby_fire_ant", "bumble_bee", "sbumble_bee", "mantis", "smantis", "queen_fire_ant", "squeen_fire_ant", "roach", "sroach", "soldier_fire_ant", "ssoldier_fire_ant", "starfish", "sstarfish", "worker_fire_ant", "sworker_fire_ant"] },
-        { x: 54675, y: 583.2, names: ["crab", "scrab", "jellyfish", "sjellyfish"] },
-        { x: 65610, y: 583.2, names: ["nazar_beetle", "snazar_beetle", "beetle", "sbeetle", "mummy_beetle", "smummy_beetle", "pharaoh_beetle", "spharaoh_beetle", "hel_beetle", "shel_beetle", "hel_centipede", "shel_centipede", "silverfish", "ssilverfish", "worm", "sworm"] },
-        { x: 76545, y: 583.2, names: ["cactus", "scactus"] },
-        { x: 87480, y: 583.2, names: ["sandstorm", "ssandstorm"] },
-        { x: 109350, y: 583.2, names: ["bee", "sbee", "hornet", "shornet", "wasp", "swasp", "hel_wasp", "shel_wasp"] },
-        { x: 32805, y: 4957.2, names: ["mecha_crab", "smecha_crab"] },
-        { x: 65610, y: 4957.2, names: ["mecha_spider", "smecha_spider"] },
-        { x: 109350, y: 4957.2, names: ["mecha_wasp", "smecha_wasp"] },
-        { x: 21870, y: 11518.2, names: ["mecha_flower", "smecha_flower"] },
-        { x: 32805, y: 583.2, names: ["gambler", "sgambler"] },
-        { x: 65610, y: 22453.2, names: ["leafbug", "sleafbug", "golden_leafbug", "sgolden_leafbug"] }
+        { x: 6561, y: 583.2, z: 0, names: ["ant_egg", "sant_egg", "fire_ant_egg", "sfire_ant_egg", "garbage", "sgarbage", "termite_egg", "stermite_egg", "tomb", "stomb"] },
+        { x: 8748, y: 583.2, z: 0, names: ["barrel", "sbarrel"] },
+        { x: 10935, y: 583.2, z: 0, names: ["bubble", "sbubble", "firefly", "sfirefly", "magic_firefly", "smagic_firefly", "worm_guts", "sworm_guts"] },
+        { x: 21870, y: 583.2, z: 0, names: ["target_dummy", "starget_dummy", "baby_ant", "sbaby_ant", "baby_termite", "sbaby_termite", "bush", "sbush", "centipede", "scentipede", "desert_centipede", "sdesert_centipede", "evil_centipede", "sevil_centipede", "fly", "sfly", "ghost", "sghost", "moth", "smoth", "queen_ant", "squeen_ant", "rock", "srock", "ladybug", "sladybug", "dark_ladybug", "sdark_ladybug", "shiny_ladybug", "sshiny_ladybug", "leech", "sleech", "shell", "sshell", "soldier_ant", "ssoldier_ant", "soldier_termite", "ssoldier_termite", "sponge", "ssponge", "square", "ssquare", "termite_overmind", "stermite_overmind", "worker_ant", "sworker_ant", "worket_termite", "sworket_termite"] },
+        { x: 32805, y: 583.2, z: 0, names: ["ant_hole", "sant_hole", "dandelion", "sdandelion", "scorpion", "sscorpion", "hel_spider", "shel_spider", "spider", "sspider"] },
+        { x: 43740, y: 583.2, z: 0, names: ["baby_fire_ant", "sbaby_fire_ant", "bumble_bee", "sbumble_bee", "mantis", "smantis", "queen_fire_ant", "squeen_fire_ant", "roach", "sroach", "soldier_fire_ant", "ssoldier_fire_ant", "starfish", "sstarfish", "worker_fire_ant", "sworker_fire_ant"] },
+        { x: 54675, y: 583.2, z: 0, names: ["crab", "scrab", "jellyfish", "sjellyfish"] },
+        { x: 65610, y: 583.2, z: 0, names: ["nazar_beetle", "snazar_beetle", "beetle", "sbeetle", "mummy_beetle", "smummy_beetle", "pharaoh_beetle", "spharaoh_beetle", "hel_beetle", "shel_beetle", "hel_centipede", "shel_centipede", "silverfish", "ssilverfish", "worm", "sworm"] },
+        { x: 76545, y: 583.2, z: 0, names: ["cactus", "scactus"] },
+        { x: 87480, y: 583.2, z: 0, names: ["sandstorm", "ssandstorm"] },
+        { x: 109350, y: 583.2, z: 0, names: ["bee", "sbee", "hornet", "shornet", "wasp", "swasp", "hel_wasp", "shel_wasp"] },
+        { x: 32805, y: 4957.2, z: 0, names: ["mecha_crab", "smecha_crab"] },
+        { x: 65610, y: 4957.2, z: 0, names: ["mecha_spider", "smecha_spider"] },
+        { x: 109350, y: 4957.2, z: 0, names: ["mecha_wasp", "smecha_wasp"] },
+        { x: 21870, y: 11518.2, z: 1, names: ["mecha_flower", "smecha_flower"] },
+        { x: 32805, y: 583.2, z: 1, names: ["gambler", "sgambler"] },
+        { x: 65610, y: 22453.2, z: 0, names: ["leafbug", "sleafbug", "golden_leafbug", "sgolden_leafbug"] }
     ];
 
     const MOB_MAP = {};
     MOB_GROUPS.forEach(group => {
         group.names.forEach(name => {
-            MOB_MAP[name] = { x: group.x, y: group.y };
+            MOB_MAP[name] = { x: group.x, y: group.y, z: group.z };
         });
     });
 
@@ -1007,19 +1043,24 @@
         const rotspeedInput = document.getElementById('rotspeed');
         const lentildisInput = document.getElementById('lentildis');
         const mobInput = document.getElementById('mob');
+        const isFlowerInput = document.getElementById('is_flower');
 
+        // 监听生物名称输入
         mobInput.addEventListener('input', function() {
             let val = mobInput.value.trim();
             if (MOB_MAP[val]) {
                 xInput.value = MOB_MAP[val].x;
                 yInput.value = MOB_MAP[val].y;
+                isFlowerInput.checked = (MOB_MAP[val].z === 1);
             }
         });
 
+        // 如果手动修改体伤，清空生物名称框
         xInput.addEventListener('input', function() {
             mobInput.value = '';
         });
 
+        // 如果手动修改护甲，清空生物名称框
         yInput.addEventListener('input', function() {
             mobInput.value = '';
         });
@@ -1163,6 +1204,8 @@
                 if (isNaN(y)) y = 583.2;
                 y = Math.max(-2147483648, Math.min(2147483647, y));
 
+                const z = document.getElementById('is_flower').checked ? 'y' : 'n';
+
                 const mode = document.getElementById('mode').value;
 
                 let lentildis = parseFloat(document.getElementById('lentildis').value);
@@ -1197,7 +1240,7 @@
                 ];
                 const talent = tValues.join(' ');
 
-                const result = analyze_for_web(build, talent, x, y, mode, lentildis, rotspeed, angle);
+                const result = analyze_for_web(build, talent, x, y, z, mode, lentildis, rotspeed, angle);
 
                 if (result.error) {
                     outputDiv.innerHTML = `<span style="color: #ef4444;">计算错误：${result.error}</span>`;
@@ -1270,12 +1313,14 @@
         const lentildisInput = document.getElementById('lentildis');
         const rotspeedInput = document.getElementById('rotspeed');
         const mobInput = document.getElementById('mob');
+        const isFlowerInput = document.getElementById('is_flower');
 
         mobInput.value = '';
         xInput.value = 21870;
         yInput.value = 583.2;
         lentildisInput.value = 0;
         rotspeedInput.value = 1;
+        isFlowerInput.checked = false;
 
         if (type === 'double Et claw') {
             buildInput.value = '3claw 4ugl_';
@@ -1320,6 +1365,13 @@
             xInput.value = 109350;
             yInput.value = 583.2;
             lentildisInput.value = 0;
+        } else if (type === 'claw gambler') {
+            buildInput.value = '3claw 3ugl_';
+            modeSelect.value = 'yy';
+            setTalents('Et', 'Et', '-', '-', '-', '-', '-', '-', 'Un', '-', '-', 'M');
+            xInput.value = 32805;
+            yInput.value = 583.2;
+            isFlowerInput.checked = true;
         }
 
         handleModeChange();
