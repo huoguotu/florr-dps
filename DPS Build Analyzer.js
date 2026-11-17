@@ -1,5 +1,5 @@
 // 全局变量
-let petalhealth, reload, summoner, luck, poison, dup, rot, tp, T, ed, ea, dis, mdl, udl, dl, qdl, ugl, gl, qgl, poisond, mtri, utri, tri;
+let petalhealth, reload, summoner, luck, poison, dup, rot, tp, T, ed, ea, is_flower, dis, mdl, udl, dl, qdl, ugl, gl, qgl, poisond, mtri, utri, tri;
 
 const ph_buff = {"-": 1, "C": 1.15, "Un": 1.15**2, "R": 1.15**3, "E": 1.15**4, "L": 1.15**5, "M": 1.15**6, "U": 1.15**7, "S": 1.15**8, "Et": 1.15**10};
 const ph_tp = {"-": 0, "C": 2, "Un": 6, "R": 12, "E": 20, "L": 30, "M": 42, "U": 56, "S": 72, "Et": 90};
@@ -167,6 +167,16 @@ function cal(petal) {
     if (f("chip")) return d(15309, h(2187))*10/(r(2.5, h(2187))+0.9**10/(1-0.9**10)*0.04);
     if (f("qchip")) return d(45927, h(6561))*10/(r(2.5, h(6561))+0.9**10/(1-0.9**10)*0.04);
 
+    if (is_flower === "y") {
+        if (f("mclaw_0")) return d(1215/2, h(2430))/r(3.5, h(2430));
+        if (f("mclaw") || f("mclaw_1")) return d(1215/2, h(2430), "claw", 24300/2)/r(3.5, h(2430));
+        if (f("uclaw_0")) return d(3645/2, h(7290))/r(3.5, h(7290));
+        if (f("uclaw") || f("uclaw_1")) return d(3645/2, h(7290), "claw", 72900/2)/r(3.5, h(7290));
+        if (f("claw_0")) return d(10935/2, h(21870))/r(3.5, h(21870));
+        if (f("claw") || f("claw_1")) return d(10935/2, h(21870), "claw", 218700/2)/r(3.5, h(21870));
+        if (f("qclaw_0")) return d(32805/2, h(65610))/r(3.5, h(65610));
+        if (f("qclaw") || f("qclaw_1")) return d(32805/2, h(65610), "claw", 656100/2)/r(3.5, h(65610));
+    }
     if (f("mclaw_0")) return d(1215, h(2430))/r(3.5, h(2430));
     if (f("mclaw") || f("mclaw_1")) return d(1215, h(2430), "claw", 24300)/r(3.5, h(2430));
     if (f("uclaw_0")) return d(3645, h(7290))/r(3.5, h(7290));
@@ -269,6 +279,12 @@ function cal(petal) {
     if (f("heavy")) return d(28431, h(328050))/r(10, h(328050));
     if (f("qheavy")) return d(85293, h(984150))/r(10, h(984150));
 
+    if (is_flower === "y") {
+        if (f("miris")) return d(1215/2, h(1215))/r(4, h(1215));
+        if (f("uiris")) return d(3645/2, h(3645))/r(4, h(3645));
+        if (f("iris")) return d(10935/2, h(10935))/r(4, h(10935));
+        if (f("qiris")) return d(32805/2, h(32805))/r(4, h(32805));
+    }
     if (f("miris")) return d(1215, h(1215))/r(4, h(1215));
     if (f("uiris")) return d(3645, h(3645))/r(4, h(3645));
     if (f("iris")) return d(10935, h(10935))/r(4, h(10935));
@@ -522,19 +538,29 @@ function calw(petal, angle) {
     if (f("qcard")) return (d(32805, h(196830))/r(2.5, h(196830))+d(65610, h(164025))/r(2.5, h(164025))+d(98415, h(131220))/r(2.5, h(131220))+d(131220, h(98415))/T*g(r(2.5, h(98415))))/4;
 
     if (f("mcarrot_0")) return d(4374/5, h(4374))/T*g(r(1, h(4374)));
-    if (f("mcarrot") || f("mcarrot_1")) return d(4374, h(4374))/T*g(r(1, h(4374))+0.5);
     if (f("ucarrot_0")) return d(13122/5, h(13122))/T*g(r(1, h(13122)));
-    if (f("ucarrot") || f("ucarrot_1")) return d(13122, h(13122))/T*g(r(1, h(13122))+0.5);
     if (f("carrot_0")) return d(39366/5, h(39366))/T*g(r(1, h(39366)));
-    if (f("carrot") || f("carrot_1")) return d(39366, h(39366))/T*g(r(1, h(39366))+0.5);
     if (f("qcarrot_0")) return d(118098/5, h(118098))/T*g(r(1, h(118098)));
+    if (f("mcarrot") || f("mcarrot_1")) return d(4374, h(4374))/T*g(r(1, h(4374))+0.5);
+    if (f("ucarrot") || f("ucarrot_1")) return d(13122, h(13122))/T*g(r(1, h(13122))+0.5);
+    if (f("carrot") || f("carrot_1")) return d(39366, h(39366))/T*g(r(1, h(39366))+0.5);
     if (f("qcarrot") || f("qcarrot_1") || f("carrot_1")) return d(118098, h(118098))/T*g(r(1, h(118098))+0.5);
 
-    if (f("mchip")) return d(1701, h(243))*10/T*g((r(2.5, h(243))+0.9**10/(1-0.9**10)*0.04));
-    if (f("uchip")) return d(5103, h(729))*10/T*g((r(2.5, h(729))+0.9**10/(1-0.9**10)*0.04));
-    if (f("chip")) return d(15309, h(2187))*10/T*g((r(2.5, h(2187))+0.9**10/(1-0.9**10)*0.04));
-    if (f("qchip")) return d(45927, h(6561))*10/T*g((r(2.5, h(6561))+0.9**10/(1-0.9**10)*0.04));
+    if (f("mchip")) return d(1701, h(243))*10/T*g(r(2.5, h(243))+0.9**10/(1-0.9**10)*0.04);
+    if (f("uchip")) return d(5103, h(729))*10/T*g(r(2.5, h(729))+0.9**10/(1-0.9**10)*0.04);
+    if (f("chip")) return d(15309, h(2187))*10/T*g(r(2.5, h(2187))+0.9**10/(1-0.9**10)*0.04);
+    if (f("qchip")) return d(45927, h(6561))*10/T*g(r(2.5, h(6561))+0.9**10/(1-0.9**10)*0.04);
 
+    if (is_flower === "y") {
+        if (f("mclaw_0")) return d(1215/2, h(2430))/T*g(r(3.5, h(2430)));
+        if (f("mclaw") || f("mclaw_1")) return d(1215/2, h(2430), "claw", 24300/2)/T*g(r(3.5, h(2430)));
+        if (f("uclaw_0")) return d(3645/2, h(7290))/T*g(r(3.5, h(7290)));
+        if (f("uclaw") || f("uclaw_1")) return d(3645/2, h(7290), "claw", 72900/2)/T*g(r(3.5, h(7290)));
+        if (f("claw_0")) return d(10935/2, h(21870))/T*g(r(3.5, h(21870)));
+        if (f("claw") || f("claw_1")) return d(10935/2, h(21870), "claw", 218700/2)/T*g(r(3.5, h(21870)));
+        if (f("qclaw_0")) return d(32805/2, h(65610))/T*g(r(3.5, h(65610)));
+        if (f("qclaw") || f("qclaw_1")) return d(32805/2, h(65610), "claw", 656100/2)/T*g(r(3.5, h(65610)));
+    }
     if (f("mclaw_0")) return d(1215, h(2430))/T*g(r(3.5, h(2430)));
     if (f("mclaw") || f("mclaw_1")) return d(1215, h(2430), "claw", 24300)/T*g(r(3.5, h(2430)));
     if (f("uclaw_0")) return d(3645, h(7290))/T*g(r(3.5, h(7290)));
@@ -637,6 +663,12 @@ function calw(petal, angle) {
     if (f("heavy")) return d(28431, h(328050))/T*g(r(10, h(328050)));
     if (f("qheavy")) return d(85293, h(984150))/T*g(r(10, h(984150)));
 
+    if (is_flower === "y") {
+        if (f("miris")) return d(1215/2, h(1215))/T*g(r(4, h(1215)));
+        if (f("uiris")) return d(3645/2, h(3645))/T*g(r(4, h(3645)));
+        if (f("iris")) return d(10935/2, h(10935))/T*g(r(4, h(10935)));
+        if (f("qiris")) return d(32805/2, h(32805))/T*g(r(4, h(32805)));
+    }
     if (f("miris")) return d(1215, h(1215))/T*g(r(4, h(1215)));
     if (f("uiris")) return d(3645, h(3645))/T*g(r(4, h(3645)));
     if (f("iris")) return d(10935, h(10935))/T*g(r(4, h(10935)));
@@ -821,7 +853,7 @@ function calw(petal, angle) {
     return 0;
 }
 
-function analyze_for_web(build, talent, x, y, mode, lentildis = 0.0, rotspeed = 1.0, angle = 138.0) {
+function analyze_for_web(build, talent, x, y, z, mode, lentildis = 0.0, rotspeed = 1.0, angle = 138.0) {
     if (mode === "lentil" || mode === "yy") angle = 360;
     let build_arr = build.trim().split(/\s+/);
     if (build_arr.length > 20) build_arr = build_arr.slice(0, 20);
@@ -872,6 +904,7 @@ function analyze_for_web(build, talent, x, y, mode, lentildis = 0.0, rotspeed = 
     }
     ed = x;
     ea = y;
+    is_flower = z;
     dis = lentildis;
 
     const hasExact = (arr, base) => arr.some(p => p === base || p === 's' + base || p.startsWith(base + '_') || p.startsWith('s' + base + '_'));
@@ -910,18 +943,32 @@ function analyze_for_web(build, talent, x, y, mode, lentildis = 0.0, rotspeed = 
     if (hasPetal("ugrapes")) poisond = Math.max(poisond, 18225/0.7);
     if (hasPetal("grapes")) poisond = Math.max(poisond, 54675/0.7);
     if (hasPetal("qgrapes")) poisond = Math.max(poisond, 164025/0.7);
-    if (hasPetal("miris")) poisond = Math.max(poisond, 5670);
-    if (hasPetal("uiris")) poisond = Math.max(poisond, 17010);
-    if (hasPetal("iris")) poisond = Math.max(poisond, 51030);
-    if (hasPetal("qiris")) poisond = Math.max(poisond, 153090);
+    if (is_flower === "y") {
+        if (hasPetal("miris")) poisond = Math.max(poisond, 5670/2);
+        if (hasPetal("uiris")) poisond = Math.max(poisond, 17010/2);
+        if (hasPetal("iris")) poisond = Math.max(poisond, 51030/2);
+        if (hasPetal("qiris")) poisond = Math.max(poisond, 153090/2);
+    } else {
+        if (hasPetal("miris")) poisond = Math.max(poisond, 5670);
+        if (hasPetal("uiris")) poisond = Math.max(poisond, 17010);
+        if (hasPetal("iris")) poisond = Math.max(poisond, 51030);
+        if (hasPetal("qiris")) poisond = Math.max(poisond, 153090);
+    }
     if (hasPetal("mpincer")) poisond = Math.max(poisond, 4860);
     if (hasPetal("upincer")) poisond = Math.max(poisond, 14580);
     if (hasPetal("pincer")) poisond = Math.max(poisond, 43740);
     if (hasPetal("qpincer")) poisond = Math.max(poisond, 131220);
-    if (hasPetal("muranium")) poisond = Math.max(poisond, 12150);
-    if (hasPetal("uuranium")) poisond = Math.max(poisond, 36450);
-    if (hasPetal("uranium")) poisond = Math.max(poisond, 109350);
-    if (hasPetal("quranium")) poisond = Math.max(poisond, 328050);
+    if (is_flower === "y") {
+        if (hasPetal("muranium")) poisond = Math.max(poisond, 12150/4);
+        if (hasPetal("uuranium")) poisond = Math.max(poisond, 36450/4);
+        if (hasPetal("uranium")) poisond = Math.max(poisond, 109350/4);
+        if (hasPetal("quranium")) poisond = Math.max(poisond, 328050/4);
+    } else {
+        if (hasPetal("muranium")) poisond = Math.max(poisond, 12150);
+        if (hasPetal("uuranium")) poisond = Math.max(poisond, 36450);
+        if (hasPetal("uranium")) poisond = Math.max(poisond, 109350);
+        if (hasPetal("quranium")) poisond = Math.max(poisond, 328050);
+    }
     poisond *= poison;
 
     mtri = build_arr.filter(p => p === "mtriangle" || p === "mtriangle_").length;
